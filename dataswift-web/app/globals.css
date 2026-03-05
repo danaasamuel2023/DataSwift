@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #FF6B00;
+  --color-primary-dark: #E05500;
+  --color-primary-light: #FF8533;
+  --color-secondary: #1A1A2E;
+  --color-secondary-light: #2D2D44;
+  --color-accent: #FFB800;
+  --color-accent-light: #FFCC33;
+  --color-surface: #FFFFFF;
+  --color-background: #FAFAF8;
+  --color-background-alt: #F3F2EE;
+  --color-mtn: #FFCC00;
+  --color-telecel: #E60000;
+  --color-at: #0066CC;
+  --color-success: #10B981;
+  --color-error: #EF4444;
+  --color-warning: #F59E0B;
+
+  --font-heading: 'Satoshi', 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+
+/* Custom base styles */
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-secondary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Focus ring utility */
+.focus-ring {
+  outline: none;
+}
+.focus-ring:focus-visible {
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.3);
+}

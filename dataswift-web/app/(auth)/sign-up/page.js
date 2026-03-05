@@ -1,0 +1,140 @@
+'use client';
+import { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { User, Mail, Lock, Phone, Gift } from 'lucide-react';
+import toast from 'react-hot-toast';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import { useAuth } from '@/context/AuthContext';
+import api from '@/lib/api';
+
+function SignUpForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phoneNumber: '',
+    password: '',
+    referralCode: searchParams.get('ref') || ''
+  });
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
+  };
+
+  const validate = () => {
+    const e = {};
+    if (!form.name.trim()) e.name = 'Name is required';
+    if (!form.email.trim()) e.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Enter a valid email';
+    if (!form.phoneNumber.trim()) e.phoneNumber = 'Phone number is required';
+    if (!form.password) e.password = 'Password is required';
+    else if (form.password.length < 6) e.password = 'At least 6 characters';
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    setLoading(true);
+    try {
+      const res = await api.post('/auth/register', form);
+      const { token, user } = res.data.data;
+      login(token, user);
+      toast.success('Welcome to DataSwift!');
+      router.push('/dashboard');
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Registration failed. Try again.';
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Create your account</h1>
+      <p className="text-secondary/40 text-sm mt-1.5 mb-8">Start buying data in under a minute.</p>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Input
+          label="Full name"
+          name="name"
+          icon={User}
+          placeholder="Kofi Mensah"
+          value={form.name}
+          onChange={handleChange}
+          error={errors.name}
+        />
+        <Input
+          label="Email"
+          name="email"
+          type="email"
+          icon={Mail}
+          placeholder="you@example.com"
+          value={form.email}
+          onChange={handleChange}
+          error={errors.email}
+        />
+        <Input
+          label="Phone number"
+          name="phoneNumber"
+          type="tel"
+          icon={Phone}
+          placeholder="024 XXX XXXX"
+          value={form.phoneNumber}
+          onChange={handleChange}
+          error={errors.phoneNumber}
+        />
+        <Input
+          label="Password"
+          name="password"
+          type="password"
+          icon={Lock}
+          placeholder="Min. 6 characters"
+          value={form.password}
+          onChange={handleChange}
+          error={errors.password}
+        />
+        <Input
+          label="Referral code (optional)"
+          name="referralCode"
+          icon={Gift}
+          placeholder="e.g. KOF1AB"
+          value={form.referralCode}
+          onChange={handleChange}
+        />
+
+        <Button type="submit" fullWidth size="lg" loading={loading} className="mt-2">
+          Create account
+        </Button>
+      </form>
+
+      <p className="text-center text-sm text-secondary/40 mt-6">
+        Already have an account?{' '}
+        <Link href="/sign-in" className="text-primary font-semibold hover:underline">Log in</Link>
+      </p>
+    </div>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center py-12">
+        <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <SignUpForm />
+    </Suspense>
+  );
+}
