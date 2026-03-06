@@ -70,16 +70,9 @@ export default function MarketingLayout({ children }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="col-span-2 md:col-span-1">
-              <div className="mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">DS</span>
-                  </div>
-                  <span className="text-white font-bold text-lg">DataSwift</span>
-                </div>
-              </div>
+              <p className="text-white font-extrabold text-lg mb-3">data<span className="text-primary">swift</span></p>
               <p className="text-sm leading-relaxed">
-                Ghana&apos;s fastest way to buy and sell data bundles. Instant delivery, unbeatable prices.
+                Cheap data bundles for MTN, Telecel & AirtelTigo. Pay with MoMo.
               </p>
             </div>
             <div>
