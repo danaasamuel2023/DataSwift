@@ -9,6 +9,7 @@ const Withdrawal = require('../../models/Withdrawal');
 const { Referral } = require('../../models/Referral');
 const Settings = require('../../models/Settings');
 const datamartService = require('../../services/datamartService');
+const ghustService = require('../../services/ghustService');
 
 // All admin routes require auth + admin
 router.use(auth, adminAuth);
@@ -16,7 +17,14 @@ router.use(auth, adminAuth);
 // GET /api/admin/dashboard
 router.get('/dashboard', async (req, res) => {
   try {
-    const [totalUsers, totalOrders, revenueAgg, depositsAgg, recentOrders] = await Promise.all([
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    const [
+      totalUsers, totalOrders, revenueAgg, depositsAgg,
+      todayOrders, todayRevenueAgg, todayProfitAgg,
+      recentOrders, settings
+    ] = await Promise.all([
       User.countDocuments(),
       DataPurchase.countDocuments(),
       Transaction.aggregate([
@@ -27,8 +35,25 @@ router.get('/dashboard', async (req, res) => {
         { $match: { type: 'deposit', status: 'completed' } },
         { $group: { _id: null, total: { $sum: '$amount' } } },
       ]),
+      // Today's order count
+      DataPurchase.countDocuments({ createdAt: { $gte: todayStart } }),
+      // Today's revenue (selling price)
+      DataPurchase.aggregate([
+        { $match: { createdAt: { $gte: todayStart }, status: { $in: ['completed', 'processing', 'pending'] } } },
+        { $group: { _id: null, total: { $sum: '$price' } } },
+      ]),
+      // Today's profit (selling price - cost price)
+      DataPurchase.aggregate([
+        { $match: { createdAt: { $gte: todayStart }, status: { $in: ['completed', 'processing', 'pending'] } } },
+        { $group: { _id: null, revenue: { $sum: '$price' }, cost: { $sum: '$costPrice' } } },
+      ]),
       DataPurchase.find().sort({ createdAt: -1 }).limit(10).lean(),
+      Settings.getSettings(),
     ]);
+
+    const todayProfit = todayProfitAgg[0]
+      ? (todayProfitAgg[0].revenue - todayProfitAgg[0].cost)
+      : 0;
 
     res.json({
       status: 'success',
@@ -37,11 +62,31 @@ router.get('/dashboard', async (req, res) => {
         totalOrders,
         totalRevenue: revenueAgg[0]?.total || 0,
         totalDeposits: depositsAgg[0]?.total || 0,
+        todayOrders,
+        todayRevenue: todayRevenueAgg[0]?.total || 0,
+        todayProfit,
+        basePrices: settings?.pricing?.basePrices || {},
+        sellingPrices: settings?.pricing?.sellingPrices || {},
         recentOrders,
       },
     });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// GET /api/admin/provider-prices - Fetch live prices from Ghust
+router.get('/provider-prices', async (req, res) => {
+  try {
+    const packages = await ghustService.getPackages();
+    const prices = {};
+    for (const pkg of packages) {
+      if (!prices[pkg.network]) prices[pkg.network] = {};
+      prices[pkg.network][String(pkg.capacity)] = pkg.price;
+    }
+    res.json({ status: 'success', data: prices });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: 'Failed to fetch provider prices: ' + err.message });
   }
 });
 
@@ -148,10 +193,13 @@ router.get('/pricing', async (req, res) => {
 // PUT /api/admin/pricing
 router.put('/pricing', async (req, res) => {
   try {
-    const { sellingPrices } = req.body;
+    const { sellingPrices, basePrices } = req.body;
+    const updates = {};
+    if (sellingPrices) updates['pricing.sellingPrices'] = sellingPrices;
+    if (basePrices) updates['pricing.basePrices'] = basePrices;
     await Settings.findOneAndUpdate(
       { _id: 'app_settings' },
-      { $set: { 'pricing.sellingPrices': sellingPrices } },
+      { $set: updates },
       { upsert: true }
     );
     res.json({ status: 'success', message: 'Pricing updated' });
@@ -196,9 +244,10 @@ router.get('/settings', async (req, res) => {
 // PUT /api/admin/settings
 router.put('/settings', async (req, res) => {
   try {
-    const { datamart, paystack, sms, withdrawal } = req.body;
+    const { datamart, ghust, paystack, sms, withdrawal } = req.body;
     const updates = {};
     if (datamart) updates.datamart = datamart;
+    if (ghust) updates.ghust = ghust;
     if (paystack) updates.paystack = paystack;
     if (sms) updates.sms = sms;
     if (withdrawal) updates.withdrawal = withdrawal;
@@ -209,6 +258,46 @@ router.put('/settings', async (req, res) => {
       { upsert: true }
     );
     res.json({ status: 'success', message: 'Settings updated' });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// POST /api/admin/settings/test-ghust
+router.post('/settings/test-ghust', async (req, res) => {
+  try {
+    const result = await ghustService.testConnection();
+    if (result.connected) {
+      await Settings.findOneAndUpdate(
+        { _id: 'app_settings' },
+        { $set: { 'ghust.isConnected': true } },
+        { upsert: true }
+      );
+    }
+    res.json({ status: 'success', data: result });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// POST /api/admin/pricing/sync-ghust
+router.post('/pricing/sync-ghust', async (req, res) => {
+  try {
+    const packages = await ghustService.getPackages();
+    const basePrices = {};
+
+    for (const pkg of packages) {
+      if (!basePrices[pkg.network]) basePrices[pkg.network] = {};
+      basePrices[pkg.network][String(pkg.capacity)] = pkg.price;
+    }
+
+    await Settings.findOneAndUpdate(
+      { _id: 'app_settings' },
+      { $set: { 'pricing.basePrices': basePrices, 'ghust.isConnected': true, 'ghust.lastSyncedAt': new Date() } },
+      { upsert: true }
+    );
+
+    res.json({ status: 'success', message: `Synced ${packages.length} packages from Ghust`, data: { basePrices } });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }

@@ -4,7 +4,7 @@ const StoreProduct = require('../models/StoreProduct');
 const User = require('../models/User');
 const DataPurchase = require('../models/DataPurchase');
 const paystackService = require('../services/paystackService');
-const datamartService = require('../services/datamartService');
+const ghustService = require('../services/ghustService');
 const { generateReference } = require('../utils/helpers');
 
 // GET /api/shop/:slug
@@ -125,6 +125,7 @@ router.get('/:slug/verify-payment', async (req, res) => {
       price: meta.sellingPrice,
       costPrice: meta.basePrice,
       reference,
+      provider: 'ghust',
       status: 'pending',
       purchaseSource: 'store',
       storeDetails: {
@@ -134,28 +135,20 @@ router.get('/:slug/verify-payment', async (req, res) => {
       },
     });
 
-    // Send to DataMart
+    // Send to Ghust with webhook callback
     try {
-      const result = await datamartService.purchaseData({
+      const callbackUrl = `${process.env.API_URL || 'http://localhost:4000'}/api/webhook/ghust`;
+      const result = await ghustService.purchaseData({
         network: meta.network,
         capacity: meta.capacity,
         phoneNumber: meta.phoneNumber,
+        callbackUrl,
       });
-      purchase.datamartReference = result?.reference || result?.orderReference;
+      purchase.ghustReference = result?.reference || result?.orderReference;
       purchase.status = 'processing';
       await purchase.save();
 
-      // Credit agent
-      await Store.findOneAndUpdate(
-        { _id: store._id },
-        {
-          $inc: {
-            totalEarnings: agentProfit,
-            pendingBalance: agentProfit,
-            totalSales: 1,
-          },
-        }
-      );
+      // Agent earnings will be credited via webhook when order completes
     } catch (err) {
       purchase.status = 'failed';
       await purchase.save();

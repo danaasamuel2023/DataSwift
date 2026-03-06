@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { ShoppingBag, Phone, ChevronRight, Check, Loader2, AlertCircle } from 'lucide-react';
+import { ShoppingBag, Phone, Wallet, Smartphone, Check, Loader2, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
@@ -24,6 +24,7 @@ export default function BuyDataPage() {
   const [selectedBundle, setSelectedBundle] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [buying, setBuying] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('wallet'); // wallet | momo
   const [step, setStep] = useState('network'); // network | bundle | confirm | done
 
   useEffect(() => {
@@ -61,21 +62,39 @@ export default function BuyDataPage() {
       toast.error('Enter a phone number');
       return;
     }
-    if (selectedBundle.price > (user?.walletBalance || 0)) {
-      toast.error('Insufficient balance. Please top up your wallet.');
-      return;
-    }
 
     setBuying(true);
     try {
-      await api.post('/purchase/buy', {
-        network: selectedNetwork,
-        capacity: selectedBundle.capacity,
-        phoneNumber: phoneNumber.trim(),
-      });
-      toast.success('Data purchase successful!');
-      refreshUser();
-      setStep('done');
+      if (paymentMethod === 'wallet') {
+        // Pay from wallet balance
+        if (selectedBundle.price > (user?.walletBalance || 0)) {
+          toast.error('Insufficient balance. Please top up your wallet or pay with MoMo.');
+          setBuying(false);
+          return;
+        }
+
+        await api.post('/purchase/buy', {
+          network: selectedNetwork,
+          capacity: selectedBundle.capacity,
+          phoneNumber: phoneNumber.trim(),
+        });
+        toast.success('Data purchase successful!');
+        refreshUser();
+        setStep('done');
+      } else {
+        // Pay directly with MoMo
+        const res = await api.post('/purchase/buy-with-momo', {
+          network: selectedNetwork,
+          capacity: selectedBundle.capacity,
+          phoneNumber: phoneNumber.trim(),
+        });
+        const { authorization_url } = res.data.data;
+        if (authorization_url) {
+          window.location.href = authorization_url;
+        } else {
+          toast.error('Failed to initialize payment');
+        }
+      }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Purchase failed');
     } finally {
@@ -87,6 +106,7 @@ export default function BuyDataPage() {
     setSelectedNetwork(null);
     setSelectedBundle(null);
     setPhoneNumber('');
+    setPaymentMethod('wallet');
     setStep('network');
   };
 
@@ -195,7 +215,7 @@ export default function BuyDataPage() {
       {/* Step 3: Confirm */}
       {step === 'confirm' && selectedBundle && (
         <div>
-          <h2 className="font-bold text-sm text-secondary/60 mb-3">3. Enter recipient number</h2>
+          <h2 className="font-bold text-sm text-secondary/60 mb-3">3. Enter details & pay</h2>
           <Card>
             <div className="space-y-4">
               <Input
@@ -206,6 +226,51 @@ export default function BuyDataPage() {
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
               />
+
+              {/* Payment method toggle */}
+              <div>
+                <label className="text-sm font-semibold text-secondary/60 block mb-2">Payment method</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => setPaymentMethod('wallet')}
+                    className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
+                      paymentMethod === 'wallet'
+                        ? 'border-primary bg-primary/5'
+                        : 'border-secondary/[0.06] hover:border-secondary/20'
+                    }`}
+                  >
+                    <Wallet className={`w-5 h-5 ${paymentMethod === 'wallet' ? 'text-primary' : 'text-secondary/40'}`} />
+                    <div className="text-left">
+                      <p className={`text-sm font-bold ${paymentMethod === 'wallet' ? 'text-primary' : 'text-secondary'}`}>Wallet</p>
+                      <p className="text-xs text-secondary/40">{formatCurrency(user?.walletBalance || 0)}</p>
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setPaymentMethod('momo')}
+                    className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
+                      paymentMethod === 'momo'
+                        ? 'border-primary bg-primary/5'
+                        : 'border-secondary/[0.06] hover:border-secondary/20'
+                    }`}
+                  >
+                    <Smartphone className={`w-5 h-5 ${paymentMethod === 'momo' ? 'text-primary' : 'text-secondary/40'}`} />
+                    <div className="text-left">
+                      <p className={`text-sm font-bold ${paymentMethod === 'momo' ? 'text-primary' : 'text-secondary'}`}>MoMo</p>
+                      <p className="text-xs text-secondary/40">Pay directly</p>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Wallet insufficient balance warning */}
+              {paymentMethod === 'wallet' && selectedBundle.price > (user?.walletBalance || 0) && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-3 flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
+                  <p className="text-xs text-red-600">
+                    Insufficient wallet balance. <button onClick={() => setPaymentMethod('momo')} className="font-bold underline">Pay with MoMo instead</button> or <a href="/wallet" className="font-bold underline">top up your wallet</a>.
+                  </p>
+                </div>
+              )}
 
               <div className="bg-background rounded-xl p-4 space-y-2">
                 <div className="flex justify-between text-sm">
@@ -219,7 +284,11 @@ export default function BuyDataPage() {
                   <span className="font-semibold text-secondary">{selectedBundle.capacity}GB</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-secondary/40">Price</span>
+                  <span className="text-secondary/40">Payment</span>
+                  <span className="font-semibold text-secondary">{paymentMethod === 'wallet' ? 'Wallet' : 'Mobile Money'}</span>
+                </div>
+                <div className="flex justify-between text-sm border-t border-secondary/[0.06] pt-2 mt-2">
+                  <span className="text-secondary/40">Total</span>
                   <span className="font-extrabold text-primary">{formatCurrency(selectedBundle.price)}</span>
                 </div>
               </div>
@@ -231,7 +300,7 @@ export default function BuyDataPage() {
                 onClick={handleBuy}
               >
                 <ShoppingBag className="w-4 h-4" />
-                Confirm Purchase
+                {paymentMethod === 'wallet' ? 'Pay from Wallet' : 'Pay with MoMo'}
               </Button>
             </div>
           </Card>

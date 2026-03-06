@@ -4,7 +4,7 @@ const DataPurchaseSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    default: null
   },
   phoneNumber: {
     type: String,
@@ -25,15 +25,21 @@ const DataPurchaseSchema = new mongoose.Schema({
   },
   costPrice: {
     type: Number,
-    required: true
+    default: 0
   },
   reference: {
     type: String,
     required: true,
     unique: true
   },
+  provider: {
+    type: String,
+    enum: ['datamart', 'ghust'],
+    default: 'ghust'
+  },
   datamartReference: String,
   datamartOrderId: String,
+  ghustReference: String,
   status: {
     type: String,
     enum: ['pending', 'processing', 'completed', 'failed', 'refunded'],
@@ -41,9 +47,11 @@ const DataPurchaseSchema = new mongoose.Schema({
   },
   purchaseSource: {
     type: String,
-    enum: ['direct', 'store'],
+    enum: ['direct', 'store', 'guest'],
     default: 'direct'
   },
+  guestEmail: String,
+  guestPhone: String,
   storeDetails: {
     storeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Store' },
     storeName: String,
@@ -64,6 +72,7 @@ const DataPurchaseSchema = new mongoose.Schema({
 DataPurchaseSchema.index({ userId: 1, createdAt: -1 });
 DataPurchaseSchema.index({ reference: 1 });
 DataPurchaseSchema.index({ datamartReference: 1 });
+DataPurchaseSchema.index({ ghustReference: 1 });
 DataPurchaseSchema.index({ status: 1 });
 DataPurchaseSchema.index({ 'storeDetails.storeId': 1, createdAt: -1 });
 

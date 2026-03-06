@@ -1,0 +1,388 @@
+const router = require('express').Router();
+const crypto = require('crypto');
+const DataPurchase = require('../models/DataPurchase');
+const User = require('../models/User');
+const Store = require('../models/Store');
+const Transaction = require('../models/Transaction');
+const Settings = require('../models/Settings');
+const paystackService = require('../services/paystackService');
+const { generateReference } = require('../utils/helpers');
+
+// Verify Ghust webhook signature
+async function verifyGhustSignature(req, res, next) {
+  try {
+    const settings = await Settings.getSettings();
+    const secret = settings?.ghust?.webhookSecret;
+
+    // If no secret is set, skip verification (dev mode)
+    if (!secret) {
+      return next();
+    }
+
+    const signature = req.headers['x-ghust-signature'] || req.headers['x-webhook-signature'];
+    if (!signature) {
+      return res.status(401).json({ status: 'error', message: 'Missing webhook signature' });
+    }
+
+    const payload = JSON.stringify(req.body);
+    const expectedSignature = crypto
+      .createHmac('sha256', secret)
+      .update(payload)
+      .digest('hex');
+
+    if (signature !== expectedSignature) {
+      return res.status(401).json({ status: 'error', message: 'Invalid webhook signature' });
+    }
+
+    next();
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: 'Webhook verification failed' });
+  }
+}
+
+// POST /api/webhook/ghust - Ghust order status webhook
+// Handles both direct user purchases and store buyer purchases
+router.post('/ghust', verifyGhustSignature, async (req, res) => {
+  try {
+    const { reference, orderReference, status, message } = req.body;
+
+    const ghustRef = reference || orderReference;
+    if (!ghustRef || !status) {
+      return res.status(400).json({ status: 'error', message: 'Missing reference or status' });
+    }
+
+    // Find the purchase by ghust reference
+    const purchase = await DataPurchase.findOne({
+      $or: [
+        { ghustReference: ghustRef },
+        { reference: ghustRef },
+      ],
+    });
+
+    if (!purchase) {
+      return res.status(404).json({ status: 'error', message: 'Order not found' });
+    }
+
+    // Already in a final state
+    if (['completed', 'failed', 'refunded'].includes(purchase.status)) {
+      return res.json({ status: 'success', message: 'Order already in final state' });
+    }
+
+    const newStatus = status.toLowerCase();
+
+    if (newStatus === 'completed' || newStatus === 'success' || newStatus === 'delivered') {
+      purchase.status = 'completed';
+      await purchase.save();
+
+      // If store purchase, credit agent earnings
+      if (purchase.purchaseSource === 'store' && purchase.storeDetails?.storeId) {
+        const agentProfit = purchase.storeDetails.agentProfit || 0;
+        if (agentProfit > 0) {
+          await Store.findOneAndUpdate(
+            { _id: purchase.storeDetails.storeId },
+            {
+              $inc: {
+                totalEarnings: agentProfit,
+                pendingBalance: agentProfit,
+                totalSales: 1,
+              },
+            }
+          );
+        }
+      }
+
+    } else if (newStatus === 'failed' || newStatus === 'rejected' || newStatus === 'cancelled') {
+      purchase.status = 'failed';
+      purchase.failureReason = message || 'Order failed via webhook';
+      await purchase.save();
+
+      // Refund for direct purchases (wallet users)
+      if (purchase.purchaseSource === 'direct') {
+        const user = await User.findOneAndUpdate(
+          { _id: purchase.userId },
+          { $inc: { walletBalance: purchase.price } },
+          { new: true }
+        );
+
+        if (user) {
+          await Transaction.create({
+            userId: purchase.userId,
+            type: 'refund',
+            amount: purchase.price,
+            balanceBefore: user.walletBalance - purchase.price,
+            balanceAfter: user.walletBalance,
+            status: 'completed',
+            reference: generateReference('RFD'),
+            description: `Auto-refund: failed ${purchase.capacity}GB ${purchase.network} order (Ghust)`,
+          });
+        }
+      }
+
+      // For store purchases where payment was already collected,
+      // the admin handles refunds manually since customer paid via Paystack
+    } else if (newStatus === 'processing' || newStatus === 'pending') {
+      purchase.status = 'processing';
+      await purchase.save();
+    }
+
+    res.json({ status: 'success', message: 'Webhook processed' });
+  } catch (err) {
+    console.error('Ghust webhook error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Webhook processing failed' });
+  }
+});
+
+// Verify Paystack webhook signature
+async function verifyPaystackSignature(req, res, next) {
+  try {
+    const settings = await Settings.getSettings();
+    const secret = settings?.paystack?.secretKey;
+
+    if (!secret) {
+      return res.status(401).json({ status: 'error', message: 'Paystack not configured' });
+    }
+
+    const signature = req.headers['x-paystack-signature'];
+    if (!signature) {
+      return res.status(401).json({ status: 'error', message: 'Missing Paystack signature' });
+    }
+
+    const hash = crypto
+      .createHmac('sha512', secret)
+      .update(JSON.stringify(req.body))
+      .digest('hex');
+
+    if (hash !== signature) {
+      return res.status(401).json({ status: 'error', message: 'Invalid Paystack signature' });
+    }
+
+    next();
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: 'Paystack webhook verification failed' });
+  }
+}
+
+// POST /api/webhook/paystack - Paystack payment webhook
+// Handles wallet deposits and store purchases
+router.post('/paystack', verifyPaystackSignature, async (req, res) => {
+  try {
+    const { event, data } = req.body;
+
+    // Only handle successful charges
+    if (event !== 'charge.success') {
+      return res.json({ status: 'success', message: 'Event ignored' });
+    }
+
+    const reference = data.reference;
+    const metadata = data.metadata || {};
+
+    // Handle wallet deposit
+    if (metadata.type === 'deposit') {
+      const transaction = await Transaction.findOne({ reference });
+      if (!transaction) {
+        return res.status(404).json({ status: 'error', message: 'Transaction not found' });
+      }
+
+      // Already processed
+      if (transaction.status === 'completed') {
+        return res.json({ status: 'success', message: 'Already processed' });
+      }
+
+      // Credit wallet atomically
+      const user = await User.findOneAndUpdate(
+        { _id: transaction.userId },
+        { $inc: { walletBalance: transaction.amount } },
+        { new: true }
+      );
+
+      if (user) {
+        await Transaction.updateOne(
+          { _id: transaction._id },
+          {
+            status: 'completed',
+            balanceBefore: user.walletBalance - transaction.amount,
+            balanceAfter: user.walletBalance,
+          }
+        );
+      }
+
+      return res.json({ status: 'success', message: 'Deposit credited' });
+    }
+
+    // Handle direct MoMo purchase (logged-in user paying with MoMo)
+    if (metadata.type === 'direct_purchase') {
+      // Mark transaction as completed
+      const transaction = await Transaction.findOne({ reference });
+      if (transaction && transaction.status !== 'completed') {
+        await Transaction.updateOne(
+          { _id: transaction._id },
+          { status: 'completed' }
+        );
+      }
+
+      // Check if already processed
+      const existing = await DataPurchase.findOne({ reference });
+      if (existing) {
+        return res.json({ status: 'success', message: 'Already processed' });
+      }
+
+      // Look up cost price
+      const settings = await Settings.getSettings();
+      const basePrices = settings?.pricing?.basePrices || {};
+      const costPrice = (basePrices[metadata.network] || {})[String(metadata.capacity)] || 0;
+
+      // Create purchase record
+      const purchase = await DataPurchase.create({
+        userId: metadata.userId,
+        phoneNumber: metadata.phoneNumber,
+        network: metadata.network,
+        capacity: metadata.capacity,
+        price: metadata.price,
+        costPrice,
+        reference,
+        provider: 'ghust',
+        status: 'pending',
+        purchaseSource: 'direct',
+      });
+
+      // Send to Ghust
+      try {
+        const ghustService = require('../services/ghustService');
+        const callbackUrl = `${process.env.API_URL || 'http://localhost:4000'}/api/webhook/ghust`;
+        const result = await ghustService.purchaseData({
+          network: metadata.network,
+          capacity: metadata.capacity,
+          phoneNumber: metadata.phoneNumber,
+          callbackUrl,
+        });
+        purchase.ghustReference = result?.reference || result?.orderReference;
+        purchase.status = 'processing';
+        await purchase.save();
+      } catch (err) {
+        purchase.status = 'failed';
+        purchase.failureReason = err.message;
+        await purchase.save();
+        // No wallet refund needed — money was paid via MoMo, admin handles refund
+      }
+
+      // Process referral commission
+      const referralService = require('../services/referralService');
+      referralService.processCommission(metadata.userId, metadata.price, purchase._id);
+
+      return res.json({ status: 'success', message: 'Direct purchase processed' });
+    }
+
+    // Handle guest purchase (no account, MoMo only)
+    if (metadata.type === 'guest_purchase') {
+      const existing = await DataPurchase.findOne({ reference });
+      if (existing) {
+        return res.json({ status: 'success', message: 'Already processed' });
+      }
+
+      // Look up cost price
+      const guestSettings = await Settings.getSettings();
+      const guestBasePrices = guestSettings?.pricing?.basePrices || {};
+      const guestCostPrice = (guestBasePrices[metadata.network] || {})[String(metadata.capacity)] || 0;
+
+      const purchase = await DataPurchase.create({
+        userId: null,
+        phoneNumber: metadata.phoneNumber,
+        network: metadata.network,
+        capacity: metadata.capacity,
+        price: metadata.price,
+        costPrice: guestCostPrice,
+        reference,
+        provider: 'ghust',
+        status: 'pending',
+        purchaseSource: 'guest',
+        guestEmail: metadata.email,
+        guestPhone: metadata.phoneNumber,
+      });
+
+      try {
+        const ghustService = require('../services/ghustService');
+        const callbackUrl = `${process.env.API_URL || 'http://localhost:4000'}/api/webhook/ghust`;
+        const result = await ghustService.purchaseData({
+          network: metadata.network,
+          capacity: metadata.capacity,
+          phoneNumber: metadata.phoneNumber,
+          callbackUrl,
+        });
+        purchase.ghustReference = result?.reference || result?.orderReference;
+        purchase.status = 'processing';
+        await purchase.save();
+      } catch (err) {
+        purchase.status = 'failed';
+        purchase.failureReason = err.message;
+        await purchase.save();
+      }
+
+      return res.json({ status: 'success', message: 'Guest purchase processed' });
+    }
+
+    // Handle store purchase
+    if (metadata.type === 'store_purchase') {
+      // Check if already processed
+      const existing = await DataPurchase.findOne({ reference });
+      if (existing) {
+        return res.json({ status: 'success', message: 'Already processed' });
+      }
+
+      const store = await Store.findById(metadata.storeId);
+      if (!store) {
+        return res.status(404).json({ status: 'error', message: 'Store not found' });
+      }
+
+      const agentProfit = metadata.sellingPrice - metadata.basePrice;
+
+      // Create purchase record
+      const purchase = await DataPurchase.create({
+        userId: store.agentId,
+        phoneNumber: metadata.phoneNumber,
+        network: metadata.network,
+        capacity: metadata.capacity,
+        price: metadata.sellingPrice,
+        costPrice: metadata.basePrice,
+        reference,
+        provider: 'ghust',
+        status: 'pending',
+        purchaseSource: 'store',
+        storeDetails: {
+          storeId: store._id,
+          storeName: store.storeName,
+          agentId: store.agentId,
+          agentProfit,
+          sellingPrice: metadata.sellingPrice,
+        },
+      });
+
+      // Send to Ghust
+      try {
+        const ghustService = require('../services/ghustService');
+        const callbackUrl = `${process.env.API_URL || 'http://localhost:4000'}/api/webhook/ghust`;
+        const result = await ghustService.purchaseData({
+          network: metadata.network,
+          capacity: metadata.capacity,
+          phoneNumber: metadata.phoneNumber,
+          callbackUrl,
+        });
+        purchase.ghustReference = result?.reference || result?.orderReference;
+        purchase.status = 'processing';
+        await purchase.save();
+      } catch (err) {
+        purchase.status = 'failed';
+        purchase.failureReason = err.message;
+        await purchase.save();
+      }
+
+      return res.json({ status: 'success', message: 'Store purchase processed' });
+    }
+
+    res.json({ status: 'success', message: 'Event processed' });
+  } catch (err) {
+    console.error('Paystack webhook error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Webhook processing failed' });
+  }
+});
+
+module.exports = router;

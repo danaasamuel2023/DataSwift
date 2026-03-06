@@ -20,6 +20,7 @@ export default function MarketingLayout({ children }) {
 
             {/* Desktop nav */}
             <div className="hidden md:flex items-center gap-8">
+              <Link href="/quick-buy" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">Buy Data</Link>
               <Link href="/#features" className="text-sm font-medium text-secondary/60 hover:text-primary transition-colors">Features</Link>
               <Link href="/#pricing" className="text-sm font-medium text-secondary/60 hover:text-primary transition-colors">Pricing</Link>
               <Link href="/#how-it-works" className="text-sm font-medium text-secondary/60 hover:text-primary transition-colors">How it Works</Link>
@@ -47,6 +48,7 @@ export default function MarketingLayout({ children }) {
         {/* Mobile menu */}
         {mobileMenu && (
           <div className="md:hidden bg-white border-t border-secondary/[0.06] px-4 py-4 space-y-3">
+            <Link href="/quick-buy" className="block py-2 text-sm font-bold text-primary" onClick={() => setMobileMenu(false)}>Buy Data</Link>
             <Link href="/#features" className="block py-2 text-sm font-medium text-secondary/70" onClick={() => setMobileMenu(false)}>Features</Link>
             <Link href="/#pricing" className="block py-2 text-sm font-medium text-secondary/70" onClick={() => setMobileMenu(false)}>Pricing</Link>
             <Link href="/#how-it-works" className="block py-2 text-sm font-medium text-secondary/70" onClick={() => setMobileMenu(false)}>How it Works</Link>

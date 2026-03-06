@@ -47,6 +47,7 @@ app.use('/api/store', require('./src/routes/store'));
 app.use('/api/shop', require('./src/routes/storePublic'));
 app.use('/api/withdrawal', require('./src/routes/withdrawal'));
 app.use('/api/referral', require('./src/routes/referral'));
+app.use('/api/webhook', require('./src/routes/webhook'));
 app.use('/api/admin', require('./src/routes/admin'));
 
 // 404 handler

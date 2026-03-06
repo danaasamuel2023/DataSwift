@@ -71,14 +71,14 @@ export default function LandingPage() {
               transition={{ delay: 0.3 }}
               className="flex flex-col sm:flex-row gap-3 mt-8"
             >
-              <Link href="/sign-up">
+              <Link href="/quick-buy">
                 <Button size="lg" className="group">
-                  Start buying data
+                  Buy data now
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Link href="/#how-it-works">
-                <Button variant="outline" size="lg">See how it works</Button>
+              <Link href="/sign-up">
+                <Button variant="outline" size="lg">Create account</Button>
               </Link>
             </motion.div>
 
@@ -273,7 +273,7 @@ export default function LandingPage() {
             className="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto"
           >
             {[
-              { net: 'YELLO', bundles: [{ gb: '2GB', price: '9.00' }, { gb: '5GB', price: '23.00' }, { gb: '10GB', price: '42.00' }, { gb: '25GB', price: '100.00' }] },
+              { net: 'YELLO', bundles: [{ gb: '1GB', price: '4.15' }, { gb: '2GB', price: '9.00' }, { gb: '5GB', price: '23.00' }, { gb: '10GB', price: '42.00' }] },
               { net: 'TELECEL', bundles: [{ gb: '10GB', price: '38.50' }, { gb: '15GB', price: '55.00' }, { gb: '25GB', price: '92.00' }, { gb: '50GB', price: '178.00' }] },
               { net: 'AT_PREMIUM', bundles: [{ gb: '2GB', price: '8.50' }, { gb: '5GB', price: '20.00' }, { gb: '10GB', price: '39.00' }, { gb: '25GB', price: '96.00' }] }
             ].map((network, i) => (
@@ -297,9 +297,9 @@ export default function LandingPage() {
                   ))}
                 </div>
                 <div className="px-4 pb-4">
-                  <Link href="/sign-up" className="block">
+                  <Link href="/quick-buy" className="block">
                     <button className="w-full py-2.5 text-sm font-semibold text-primary border-2 border-primary/20 rounded-xl hover:bg-primary hover:text-white transition-all">
-                      View all bundles
+                      Buy now
                     </button>
                   </Link>
                 </div>

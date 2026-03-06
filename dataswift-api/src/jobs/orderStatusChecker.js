@@ -1,26 +1,55 @@
 const DataPurchase = require('../models/DataPurchase');
+const Store = require('../models/Store');
 const User = require('../models/User');
 const Transaction = require('../models/Transaction');
 const datamartService = require('../services/datamartService');
+const ghustService = require('../services/ghustService');
 const { generateReference } = require('../utils/helpers');
 
 async function checkPendingOrders() {
   try {
     const pending = await DataPurchase.find({
       status: { $in: ['pending', 'processing'] },
-      datamartReference: { $exists: true, $ne: null },
-      createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }, // Last 24 hours
+      $or: [
+        { datamartReference: { $exists: true, $ne: null } },
+        { ghustReference: { $exists: true, $ne: null } },
+      ],
+      createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
     }).limit(50);
 
     for (const order of pending) {
       try {
-        const result = await datamartService.checkOrderStatus(order.datamartReference);
+        let result;
+
+        if (order.provider === 'ghust' && order.ghustReference) {
+          result = await ghustService.checkOrderStatus(order.ghustReference);
+        } else if (order.datamartReference) {
+          result = await datamartService.checkOrderStatus(order.datamartReference);
+        }
+
         if (!result) continue;
 
         const newStatus = result.status?.toLowerCase();
-        if (newStatus === 'completed' || newStatus === 'success') {
+        if (newStatus === 'completed' || newStatus === 'success' || newStatus === 'delivered') {
           order.status = 'completed';
           await order.save();
+
+          // Credit agent for store purchases
+          if (order.purchaseSource === 'store' && order.storeDetails?.storeId) {
+            const agentProfit = order.storeDetails.agentProfit || 0;
+            if (agentProfit > 0) {
+              await Store.findOneAndUpdate(
+                { _id: order.storeDetails.storeId },
+                {
+                  $inc: {
+                    totalEarnings: agentProfit,
+                    pendingBalance: agentProfit,
+                    totalSales: 1,
+                  },
+                }
+              );
+            }
+          }
         } else if (newStatus === 'failed' || newStatus === 'rejected') {
           order.status = 'failed';
           await order.save();

@@ -11,6 +11,13 @@ const SettingsSchema = new mongoose.Schema({
     isConnected: { type: Boolean, default: false },
     lastSyncedAt: Date
   },
+  ghust: {
+    apiUrl: { type: String, default: '' },
+    apiKey: { type: String, default: '' },
+    webhookSecret: { type: String, default: '' },
+    isConnected: { type: Boolean, default: false },
+    lastSyncedAt: Date
+  },
   paystack: {
     secretKey: { type: String, default: '' },
     publicKey: { type: String, default: '' },

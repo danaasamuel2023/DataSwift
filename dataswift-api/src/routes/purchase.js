@@ -5,8 +5,96 @@ const Transaction = require('../models/Transaction');
 const DataPurchase = require('../models/DataPurchase');
 const Settings = require('../models/Settings');
 const datamartService = require('../services/datamartService');
+const ghustService = require('../services/ghustService');
+const paystackService = require('../services/paystackService');
 const referralService = require('../services/referralService');
 const { generateReference } = require('../utils/helpers');
+
+// GET /api/purchase/guest-packages - Public, no auth
+router.get('/guest-packages', async (req, res) => {
+  try {
+    const { network } = req.query;
+    const settings = await Settings.getSettings();
+    const sellingPrices = settings?.pricing?.sellingPrices || {};
+
+    const result = [];
+    const networks = network ? [network] : Object.keys(sellingPrices);
+
+    for (const net of networks) {
+      const networkPrices = sellingPrices[net] || {};
+      for (const [capacity, price] of Object.entries(networkPrices)) {
+        if (price > 0) {
+          result.push({ network: net, capacity: parseFloat(capacity), price });
+        }
+      }
+    }
+
+    result.sort((a, b) => a.capacity - b.capacity);
+    res.json({ status: 'success', data: result });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// POST /api/purchase/guest-buy - Public, no auth, MoMo only
+router.post('/guest-buy', async (req, res) => {
+  try {
+    const { network, capacity, phoneNumber, email } = req.body;
+    if (!network || !capacity || !phoneNumber) {
+      return res.status(400).json({ status: 'error', message: 'Network, capacity, and phone number are required' });
+    }
+    if (!email) {
+      return res.status(400).json({ status: 'error', message: 'Email is required for payment' });
+    }
+
+    const settings = await Settings.getSettings();
+    const sellingPrices = settings?.pricing?.sellingPrices || {};
+    const networkPrices = sellingPrices[network] || {};
+    const price = networkPrices[String(capacity)];
+
+    if (!price) {
+      return res.status(400).json({ status: 'error', message: 'Package not available' });
+    }
+
+    const reference = generateReference('GST');
+    const callbackUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/quick-buy?payment=callback&reference=${reference}`;
+
+    const paystack = await paystackService.initializeTransaction({
+      email,
+      amount: price,
+      reference,
+      callback_url: callbackUrl,
+      metadata: {
+        type: 'guest_purchase',
+        network,
+        capacity,
+        phoneNumber,
+        email,
+        price,
+      },
+    });
+
+    res.json({
+      status: 'success',
+      data: { authorization_url: paystack.authorization_url, reference },
+    });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// GET /api/purchase/guest-status/:ref - Public, no auth
+router.get('/guest-status/:ref', async (req, res) => {
+  try {
+    const purchase = await DataPurchase.findOne({ reference: req.params.ref, purchaseSource: 'guest' });
+    if (!purchase) {
+      return res.status(404).json({ status: 'error', message: 'Purchase not found' });
+    }
+    res.json({ status: 'success', data: { status: purchase.status, network: purchase.network, capacity: purchase.capacity, phoneNumber: purchase.phoneNumber } });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
 
 // GET /api/purchase/packages
 router.get('/packages', auth, async (req, res) => {
@@ -15,20 +103,25 @@ router.get('/packages', auth, async (req, res) => {
     const settings = await Settings.getSettings();
     const sellingPrices = settings?.pricing?.sellingPrices || {};
 
-    const packages = await datamartService.getPackages(network);
+    // Build packages from admin-set selling prices
+    const result = [];
+    const networks = network ? [network] : Object.keys(sellingPrices);
 
-    // Map packages with selling prices
-    const result = packages.map(pkg => {
-      const networkPrices = sellingPrices[pkg.network] || {};
-      const sellingPrice = networkPrices[String(pkg.capacity)];
-      return {
-        network: pkg.network,
-        capacity: pkg.capacity,
-        price: sellingPrice || pkg.price,
-        costPrice: pkg.price,
-        validity: pkg.validity,
-      };
-    }).filter(pkg => pkg.price > 0);
+    for (const net of networks) {
+      const networkPrices = sellingPrices[net] || {};
+      for (const [capacity, price] of Object.entries(networkPrices)) {
+        if (price > 0) {
+          result.push({
+            network: net,
+            capacity: parseFloat(capacity),
+            price,
+          });
+        }
+      }
+    }
+
+    // Sort by capacity
+    result.sort((a, b) => a.capacity - b.capacity);
 
     res.json({ status: 'success', data: result });
   } catch (err) {
@@ -46,8 +139,10 @@ router.post('/buy', auth, async (req, res) => {
 
     const settings = await Settings.getSettings();
     const sellingPrices = settings?.pricing?.sellingPrices || {};
+    const basePrices = settings?.pricing?.basePrices || {};
     const networkPrices = sellingPrices[network] || {};
     const price = networkPrices[String(capacity)];
+    const costPrice = (basePrices[network] || {})[String(capacity)] || 0;
 
     if (!price) {
       return res.status(400).json({ status: 'error', message: 'Package not available' });
@@ -91,15 +186,18 @@ router.post('/buy', auth, async (req, res) => {
       network,
       capacity,
       price,
+      costPrice,
       reference,
+      provider: 'ghust',
       status: 'pending',
       purchaseSource: 'direct',
     });
 
-    // Send to DataMart
+    // Send to Ghust with webhook callback
     try {
-      const result = await datamartService.purchaseData({ network, capacity, phoneNumber });
-      purchase.datamartReference = result?.reference || result?.orderReference;
+      const callbackUrl = `${process.env.API_URL || 'http://localhost:4000'}/api/webhook/ghust`;
+      const result = await ghustService.purchaseData({ network, capacity, phoneNumber, callbackUrl });
+      purchase.ghustReference = result?.reference || result?.orderReference;
       purchase.status = 'processing';
       await purchase.save();
     } catch (err) {
@@ -127,6 +225,65 @@ router.post('/buy', auth, async (req, res) => {
     referralService.processCommission(user._id, price, purchase._id);
 
     res.json({ status: 'success', message: 'Purchase submitted', data: purchase });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// POST /api/purchase/buy-with-momo - Pay directly with MoMo via Paystack
+router.post('/buy-with-momo', auth, async (req, res) => {
+  try {
+    const { network, capacity, phoneNumber } = req.body;
+    if (!network || !capacity || !phoneNumber) {
+      return res.status(400).json({ status: 'error', message: 'Network, capacity, and phone number are required' });
+    }
+
+    const settings = await Settings.getSettings();
+    const sellingPrices = settings?.pricing?.sellingPrices || {};
+    const networkPrices = sellingPrices[network] || {};
+    const price = networkPrices[String(capacity)];
+
+    if (!price) {
+      return res.status(400).json({ status: 'error', message: 'Package not available' });
+    }
+
+    const user = await User.findById(req.user._id);
+    const reference = generateReference('MOM');
+    const callbackUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/payment/callback`;
+
+    // Create pending transaction
+    await Transaction.create({
+      userId: user._id,
+      type: 'purchase',
+      amount: price,
+      balanceBefore: user.walletBalance,
+      balanceAfter: user.walletBalance,
+      status: 'pending',
+      reference,
+      gateway: 'paystack',
+      description: `${capacity}GB ${network} data to ${phoneNumber} (MoMo)`,
+    });
+
+    // Initialize Paystack payment
+    const paystack = await paystackService.initializeTransaction({
+      email: user.email,
+      amount: price,
+      reference,
+      callback_url: callbackUrl,
+      metadata: {
+        userId: user._id.toString(),
+        type: 'direct_purchase',
+        network,
+        capacity,
+        phoneNumber,
+        price,
+      },
+    });
+
+    res.json({
+      status: 'success',
+      data: { authorization_url: paystack.authorization_url, reference },
+    });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
