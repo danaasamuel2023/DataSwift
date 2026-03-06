@@ -91,14 +91,6 @@ export default function MarketingLayout({ children }) {
                 <Link href="/#" className="block hover:text-white transition-colors">Terms</Link>
               </div>
             </div>
-            <div>
-              <h4 className="text-white font-semibold text-sm mb-3">Connect</h4>
-              <div className="space-y-2 text-sm">
-                <a href="#" className="block hover:text-white transition-colors">WhatsApp</a>
-                <a href="#" className="block hover:text-white transition-colors">Twitter / X</a>
-                <a href="#" className="block hover:text-white transition-colors">Instagram</a>
-              </div>
-            </div>
           </div>
           <div className="border-t border-white/10 mt-8 pt-6 text-center text-xs">
             &copy; {new Date().getFullYear()} DataSwift. All rights reserved.
