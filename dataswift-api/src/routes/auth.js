@@ -185,6 +185,22 @@ router.post('/reset-password', [
   }
 });
 
+// POST /api/auth/setup-admin — one-time: promote yourself to admin if no admin exists
+router.post('/setup-admin', auth, async (req, res) => {
+  try {
+    const adminExists = await User.findOne({ role: 'admin' });
+    if (adminExists) {
+      return res.status(403).json({ status: 'error', message: 'An admin already exists. Ask an existing admin to promote you.' });
+    }
+
+    await User.findByIdAndUpdate(req.user._id, { role: 'admin' });
+
+    res.json({ status: 'success', message: 'You are now an admin. Please log in again.' });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
 // Get current user
 router.get('/me', auth, async (req, res) => {
   res.json({

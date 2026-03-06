@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ShoppingBag, Phone, Mail, Loader2, Check, AlertCircle, Zap, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -15,6 +15,18 @@ const NETWORKS = [
 ];
 
 export default function GuestBuyPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-6 h-6 text-primary animate-spin" />
+      </div>
+    }>
+      <GuestBuyContent />
+    </Suspense>
+  );
+}
+
+function GuestBuyContent() {
   const searchParams = useSearchParams();
   const paymentStatus = searchParams.get('payment');
   const paymentRef = searchParams.get('reference') || searchParams.get('trxref');
