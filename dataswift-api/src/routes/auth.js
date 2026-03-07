@@ -77,7 +77,31 @@ router.post('/register', [
     });
   } catch (error) {
     console.error('Register error:', error);
-    res.status(500).json({ status: 'error', message: 'Registration failed. Please try again.' });
+
+    // Handle MongoDB duplicate key errors
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern || {})[0];
+      const messages = {
+        email: 'An account with this email already exists',
+        phoneNumber: 'An account with this phone number already exists',
+        referralCode: 'Registration failed due to a conflict. Please try again.'
+      };
+      return res.status(400).json({
+        status: 'error',
+        message: messages[field] || 'An account with these details already exists'
+      });
+    }
+
+    // Handle Mongoose validation errors
+    if (error.name === 'ValidationError') {
+      const firstError = Object.values(error.errors)[0];
+      return res.status(400).json({
+        status: 'error',
+        message: firstError.message
+      });
+    }
+
+    res.status(500).json({ status: 'error', message: 'Something went wrong on our end. Please try again later.' });
   }
 });
 

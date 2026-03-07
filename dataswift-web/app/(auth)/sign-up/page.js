@@ -53,8 +53,21 @@ function SignUpForm() {
       toast.success('Welcome to DataSwift!');
       router.push('/dashboard');
     } catch (err) {
-      const msg = err.response?.data?.message || 'Registration failed. Try again.';
-      toast.error(msg);
+      if (!err.response) {
+        toast.error('Network error. Check your internet connection and try again.');
+      } else {
+        const msg = err.response.data?.message || 'Something went wrong. Please try again.';
+        toast.error(msg);
+
+        // Set field-level errors for duplicate account messages
+        if (msg.includes('email')) {
+          setErrors(prev => ({ ...prev, email: msg }));
+        } else if (msg.includes('phone number')) {
+          setErrors(prev => ({ ...prev, phoneNumber: msg }));
+        } else if (msg.includes('referral code') || msg.includes('Referral') || msg.includes('Invalid referral')) {
+          setErrors(prev => ({ ...prev, referralCode: msg }));
+        }
+      }
     } finally {
       setLoading(false);
     }
@@ -112,6 +125,7 @@ function SignUpForm() {
           placeholder="e.g. KOF1AB"
           value={form.referralCode}
           onChange={handleChange}
+          error={errors.referralCode}
         />
 
         <Button type="submit" fullWidth size="lg" loading={loading} className="mt-2">
