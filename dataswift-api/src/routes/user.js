@@ -19,7 +19,8 @@ router.put('/profile', auth, async (req, res) => {
     const user = await User.findByIdAndUpdate(req.user._id, updates, { new: true }).select('-password');
     res.json({ status: 'success', data: user });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('User error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -44,7 +45,8 @@ router.put('/change-password', auth, async (req, res) => {
     await user.save();
     res.json({ status: 'success', message: 'Password changed successfully' });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('User error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 

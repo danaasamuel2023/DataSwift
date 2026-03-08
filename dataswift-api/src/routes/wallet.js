@@ -11,7 +11,8 @@ router.get('/balance', auth, async (req, res) => {
     const user = await User.findById(req.user._id).select('walletBalance');
     res.json({ status: 'success', data: { balance: user.walletBalance } });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Wallet error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -23,7 +24,8 @@ router.get('/transactions', auth, async (req, res) => {
       .limit(100);
     res.json({ status: 'success', data: transactions });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Wallet error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -32,8 +34,11 @@ router.post('/deposit', auth, async (req, res) => {
   try {
     const { amount } = req.body;
     const value = parseFloat(amount);
-    if (!value || value < 1) {
+    if (!value || isNaN(value) || value < 1) {
       return res.status(400).json({ status: 'error', message: 'Minimum deposit is GH₵1' });
+    }
+    if (value > 10000) {
+      return res.status(400).json({ status: 'error', message: 'Maximum deposit is GH₵10,000' });
     }
 
     const reference = generateReference('DEP');
@@ -67,7 +72,8 @@ router.post('/deposit', auth, async (req, res) => {
       data: { authorization_url: paystack.authorization_url, reference },
     });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Wallet error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -111,7 +117,8 @@ router.post('/verify-payment', auth, async (req, res) => {
 
     res.json({ status: 'success', message: 'Payment verified', data: { balance: user.walletBalance } });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Wallet error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 

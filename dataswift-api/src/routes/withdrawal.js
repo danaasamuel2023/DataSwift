@@ -66,7 +66,8 @@ router.post('/request', auth, async (req, res) => {
 
     res.json({ status: 'success', data: withdrawal });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Withdrawal error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -78,7 +79,8 @@ router.get('/history', auth, async (req, res) => {
       .limit(50);
     res.json({ status: 'success', data: withdrawals });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Withdrawal error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 

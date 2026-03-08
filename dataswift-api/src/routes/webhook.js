@@ -14,9 +14,8 @@ async function verifyDatamartSignature(req, res, next) {
     const settings = await Settings.getSettings();
     const secret = settings?.datamart?.apiKey;
 
-    // If no secret is set, skip verification (dev mode)
     if (!secret) {
-      return next();
+      return res.status(500).json({ status: 'error', message: 'Webhook verification not configured' });
     }
 
     const signature = req.headers['x-api-key'] || req.headers['x-webhook-signature'];

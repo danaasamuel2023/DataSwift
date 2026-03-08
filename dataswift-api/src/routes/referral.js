@@ -38,7 +38,8 @@ router.get('/dashboard', auth, async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Referral error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -47,7 +48,8 @@ router.get('/code', auth, async (req, res) => {
   try {
     res.json({ status: 'success', data: { referralCode: req.user.referralCode } });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Referral error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 

@@ -12,13 +12,15 @@ connectDB();
 
 // Security middleware
 app.use(helmet());
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'https://data-swift-drab.vercel.app',
+];
+if (process.env.NODE_ENV !== 'production') {
+  allowedOrigins.push('http://localhost:3000', 'http://localhost:3001');
+}
 app.use(cors({
-  origin: [
-    process.env.FRONTEND_URL || 'http://localhost:3000',
-    'https://data-swift-drab.vercel.app',
-    'http://localhost:3000',
-    'http://localhost:3001'
-  ],
+  origin: allowedOrigins.filter(Boolean),
   credentials: true
 }));
 
@@ -29,6 +31,17 @@ const limiter = rateLimit({
   message: { status: 'error', message: 'Too many requests. Please try again later.' }
 });
 app.use(limiter);
+
+// Stricter rate limiting for auth routes (prevent brute force)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 15,
+  message: { status: 'error', message: 'Too many attempts. Please try again in 15 minutes.' }
+});
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
+app.use('/api/auth/forgot-password', authLimiter);
+app.use('/api/auth/reset-password', authLimiter);
 
 // Body parsing
 app.use(express.json({ limit: '10mb' }));

@@ -174,7 +174,6 @@ router.post('/forgot-password', [
     await user.save();
 
     // TODO: Send OTP via SMS/email using smsService
-    console.log(`[DEV] Password reset OTP for ${user.email}: ${otp}`);
 
     res.json({ status: 'success', message: 'If an account exists, a reset code has been sent.' });
   } catch (error) {

@@ -36,7 +36,8 @@ router.post('/create', auth, async (req, res) => {
 
     res.status(201).json({ status: 'success', data: store });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Store error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -49,7 +50,8 @@ router.get('/my-store', auth, async (req, res) => {
     }
     res.json({ status: 'success', data: store });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Store error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -72,7 +74,8 @@ router.put('/update', auth, async (req, res) => {
     await store.save();
     res.json({ status: 'success', data: store });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Store error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -86,7 +89,8 @@ router.get('/products', auth, async (req, res) => {
     const products = await StoreProduct.find({ storeId: store._id });
     res.json({ status: 'success', data: products });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Store error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -125,7 +129,8 @@ router.put('/products', auth, async (req, res) => {
     const updated = await StoreProduct.find({ storeId: store._id });
     res.json({ status: 'success', data: updated });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Store error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -140,7 +145,8 @@ router.get('/sales', auth, async (req, res) => {
       .limit(100);
     res.json({ status: 'success', data: sales });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Store error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -159,7 +165,8 @@ router.get('/earnings', auth, async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Store error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 

@@ -71,7 +71,8 @@ router.get('/dashboard', async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Admin error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -86,7 +87,8 @@ router.get('/provider-prices', async (req, res) => {
     }
     res.json({ status: 'success', data: prices });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: 'Failed to fetch provider prices: ' + err.message });
+    console.error('Provider prices error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Failed to fetch provider prices. Check your DataMart API configuration.' });
   }
 });
 
@@ -96,7 +98,8 @@ router.get('/users', async (req, res) => {
     const users = await User.find().select('-password').sort({ createdAt: -1 }).limit(500);
     res.json({ status: 'success', data: users });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Admin error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -112,7 +115,8 @@ router.put('/users/:id', async (req, res) => {
     const user = await User.findByIdAndUpdate(req.params.id, updates, { new: true }).select('-password');
     res.json({ status: 'success', data: user });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Admin error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -125,7 +129,8 @@ router.get('/transactions', async (req, res) => {
       .limit(500);
     res.json({ status: 'success', data: transactions });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Admin error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -138,7 +143,8 @@ router.get('/withdrawals', async (req, res) => {
       .limit(200);
     res.json({ status: 'success', data: withdrawals });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Admin error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -170,7 +176,8 @@ router.put('/withdrawals/:id', async (req, res) => {
     await withdrawal.save();
     res.json({ status: 'success', data: withdrawal });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Admin error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -186,7 +193,8 @@ router.get('/pricing', async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Admin error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -204,7 +212,8 @@ router.put('/pricing', async (req, res) => {
     );
     res.json({ status: 'success', message: 'Pricing updated' });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Admin error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -227,7 +236,8 @@ router.post('/pricing/sync', async (req, res) => {
 
     res.json({ status: 'success', message: `Synced ${packages.length} packages`, data: { basePrices } });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Admin error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -237,7 +247,8 @@ router.get('/settings', async (req, res) => {
     const settings = await Settings.getSettings();
     res.json({ status: 'success', data: settings });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Admin error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -258,7 +269,8 @@ router.put('/settings', async (req, res) => {
     );
     res.json({ status: 'success', message: 'Settings updated' });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Admin error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -275,7 +287,8 @@ router.post('/settings/test-datamart', async (req, res) => {
     }
     res.json({ status: 'success', data: result });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Admin error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -289,7 +302,8 @@ router.get('/referrals', async (req, res) => {
       .limit(200);
     res.json({ status: 'success', data: referrals });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Admin error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -299,7 +313,8 @@ router.get('/referrals/config', async (req, res) => {
     const settings = await Settings.getSettings();
     res.json({ status: 'success', data: settings?.referral || {} });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Admin error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -320,7 +335,8 @@ router.put('/referrals/config', async (req, res) => {
     );
     res.json({ status: 'success', message: 'Referral config updated' });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Admin error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 

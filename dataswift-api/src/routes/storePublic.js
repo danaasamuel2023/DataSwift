@@ -17,7 +17,8 @@ router.get('/:slug', async (req, res) => {
     }
     res.json({ status: 'success', data: store });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Store public error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -32,7 +33,8 @@ router.get('/:slug/products', async (req, res) => {
       .select('network capacity sellingPrice');
     res.json({ status: 'success', data: products });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Store public error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -85,7 +87,8 @@ router.post('/:slug/buy', async (req, res) => {
       data: { authorization_url: paystack.authorization_url, reference },
     });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Store public error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -154,7 +157,8 @@ router.get('/:slug/verify-payment', async (req, res) => {
 
     res.json({ status: 'success', data: purchase });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Store public error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 

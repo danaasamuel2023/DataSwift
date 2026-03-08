@@ -8,7 +8,9 @@ const datamartService = require('../services/datamartService');
 // All purchases go through DataMart
 const paystackService = require('../services/paystackService');
 const referralService = require('../services/referralService');
-const { generateReference } = require('../utils/helpers');
+const { generateReference, formatPhone, validateGhanaPhone } = require('../utils/helpers');
+
+const VALID_NETWORKS = ['YELLO', 'TELECEL', 'AT_PREMIUM'];
 
 // GET /api/purchase/guest-packages - Public, no auth
 router.get('/guest-packages', async (req, res) => {
@@ -32,7 +34,8 @@ router.get('/guest-packages', async (req, res) => {
     result.sort((a, b) => a.capacity - b.capacity);
     res.json({ status: 'success', data: result });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Purchase error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -43,8 +46,14 @@ router.post('/guest-buy', async (req, res) => {
     if (!network || !capacity || !phoneNumber) {
       return res.status(400).json({ status: 'error', message: 'Network, capacity, and phone number are required' });
     }
-    if (!email) {
-      return res.status(400).json({ status: 'error', message: 'Email is required for payment' });
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      return res.status(400).json({ status: 'error', message: 'A valid email is required for payment' });
+    }
+    if (!VALID_NETWORKS.includes(network)) {
+      return res.status(400).json({ status: 'error', message: 'Invalid network' });
+    }
+    if (!validateGhanaPhone(phoneNumber)) {
+      return res.status(400).json({ status: 'error', message: 'Enter a valid Ghana phone number' });
     }
 
     const settings = await Settings.getSettings();
@@ -79,7 +88,8 @@ router.post('/guest-buy', async (req, res) => {
       data: { authorization_url: paystack.authorization_url, reference },
     });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Purchase error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -92,7 +102,8 @@ router.get('/guest-status/:ref', async (req, res) => {
     }
     res.json({ status: 'success', data: { status: purchase.status, network: purchase.network, capacity: purchase.capacity, phoneNumber: purchase.phoneNumber } });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Purchase error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -125,7 +136,8 @@ router.get('/packages', auth, async (req, res) => {
 
     res.json({ status: 'success', data: result });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Purchase error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -135,6 +147,12 @@ router.post('/buy', auth, async (req, res) => {
     const { network, capacity, phoneNumber } = req.body;
     if (!network || !capacity || !phoneNumber) {
       return res.status(400).json({ status: 'error', message: 'Network, capacity, and phone number are required' });
+    }
+    if (!VALID_NETWORKS.includes(network)) {
+      return res.status(400).json({ status: 'error', message: 'Invalid network' });
+    }
+    if (!validateGhanaPhone(phoneNumber)) {
+      return res.status(400).json({ status: 'error', message: 'Enter a valid Ghana phone number' });
     }
 
     const settings = await Settings.getSettings();
@@ -225,7 +243,8 @@ router.post('/buy', auth, async (req, res) => {
 
     res.json({ status: 'success', message: 'Purchase submitted', data: purchase });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Purchase error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -235,6 +254,12 @@ router.post('/buy-with-momo', auth, async (req, res) => {
     const { network, capacity, phoneNumber } = req.body;
     if (!network || !capacity || !phoneNumber) {
       return res.status(400).json({ status: 'error', message: 'Network, capacity, and phone number are required' });
+    }
+    if (!VALID_NETWORKS.includes(network)) {
+      return res.status(400).json({ status: 'error', message: 'Invalid network' });
+    }
+    if (!validateGhanaPhone(phoneNumber)) {
+      return res.status(400).json({ status: 'error', message: 'Enter a valid Ghana phone number' });
     }
 
     const settings = await Settings.getSettings();
@@ -284,7 +309,8 @@ router.post('/buy-with-momo', auth, async (req, res) => {
       data: { authorization_url: paystack.authorization_url, reference },
     });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Purchase error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -296,7 +322,8 @@ router.get('/history', auth, async (req, res) => {
       .limit(100);
     res.json({ status: 'success', data: purchases });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Purchase error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -309,7 +336,8 @@ router.get('/status/:ref', auth, async (req, res) => {
     }
     res.json({ status: 'success', data: purchase });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    console.error('Purchase error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
   }
 });
 
