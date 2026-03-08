@@ -40,7 +40,7 @@ const StoreSchema = new mongoose.Schema({
   pendingBalance: { type: Number, default: 0 },
   momoDetails: {
     number: String,
-    network: { type: String, enum: ['mtn', 'telecel', 'airteltigo'] },
+    network: { type: String, enum: ['MTN', 'Telecel', 'AirtelTigo', 'mtn', 'telecel', 'airteltigo'] },
     name: String
   }
 }, {
