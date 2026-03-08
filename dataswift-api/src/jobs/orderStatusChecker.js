@@ -3,7 +3,7 @@ const Store = require('../models/Store');
 const User = require('../models/User');
 const Transaction = require('../models/Transaction');
 const datamartService = require('../services/datamartService');
-const ghustService = require('../services/ghustService');
+// All purchases go through DataMart
 const { generateReference } = require('../utils/helpers');
 
 async function checkPendingOrders() {
@@ -21,9 +21,7 @@ async function checkPendingOrders() {
       try {
         let result;
 
-        if (order.provider === 'ghust' && order.ghustReference) {
-          result = await ghustService.checkOrderStatus(order.ghustReference);
-        } else if (order.datamartReference) {
+        if (order.datamartReference) {
           result = await datamartService.checkOrderStatus(order.datamartReference);
         }
 

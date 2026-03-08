@@ -9,7 +9,7 @@ const Withdrawal = require('../../models/Withdrawal');
 const { Referral } = require('../../models/Referral');
 const Settings = require('../../models/Settings');
 const datamartService = require('../../services/datamartService');
-const ghustService = require('../../services/ghustService');
+// All purchases go through DataMart
 
 // All admin routes require auth + admin
 router.use(auth, adminAuth);
@@ -75,10 +75,10 @@ router.get('/dashboard', async (req, res) => {
   }
 });
 
-// GET /api/admin/provider-prices - Fetch live prices from Ghust
+// GET /api/admin/provider-prices - Fetch live prices from DataMart
 router.get('/provider-prices', async (req, res) => {
   try {
-    const packages = await ghustService.getPackages();
+    const packages = await datamartService.getPackages();
     const prices = {};
     for (const pkg of packages) {
       if (!prices[pkg.network]) prices[pkg.network] = {};
@@ -244,10 +244,9 @@ router.get('/settings', async (req, res) => {
 // PUT /api/admin/settings
 router.put('/settings', async (req, res) => {
   try {
-    const { datamart, ghust, paystack, sms, withdrawal } = req.body;
+    const { datamart, paystack, sms, withdrawal } = req.body;
     const updates = {};
     if (datamart) updates.datamart = datamart;
-    if (ghust) updates.ghust = ghust;
     if (paystack) updates.paystack = paystack;
     if (sms) updates.sms = sms;
     if (withdrawal) updates.withdrawal = withdrawal;
@@ -258,46 +257,6 @@ router.put('/settings', async (req, res) => {
       { upsert: true }
     );
     res.json({ status: 'success', message: 'Settings updated' });
-  } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
-  }
-});
-
-// POST /api/admin/settings/test-ghust
-router.post('/settings/test-ghust', async (req, res) => {
-  try {
-    const result = await ghustService.testConnection();
-    if (result.connected) {
-      await Settings.findOneAndUpdate(
-        { _id: 'app_settings' },
-        { $set: { 'ghust.isConnected': true } },
-        { upsert: true }
-      );
-    }
-    res.json({ status: 'success', data: result });
-  } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
-  }
-});
-
-// POST /api/admin/pricing/sync-ghust
-router.post('/pricing/sync-ghust', async (req, res) => {
-  try {
-    const packages = await ghustService.getPackages();
-    const basePrices = {};
-
-    for (const pkg of packages) {
-      if (!basePrices[pkg.network]) basePrices[pkg.network] = {};
-      basePrices[pkg.network][String(pkg.capacity)] = pkg.price;
-    }
-
-    await Settings.findOneAndUpdate(
-      { _id: 'app_settings' },
-      { $set: { 'pricing.basePrices': basePrices, 'ghust.isConnected': true, 'ghust.lastSyncedAt': new Date() } },
-      { upsert: true }
-    );
-
-    res.json({ status: 'success', message: `Synced ${packages.length} packages from Ghust`, data: { basePrices } });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }

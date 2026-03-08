@@ -8,29 +8,23 @@ const Settings = require('../models/Settings');
 const paystackService = require('../services/paystackService');
 const { generateReference } = require('../utils/helpers');
 
-// Verify Ghust webhook signature
-async function verifyGhustSignature(req, res, next) {
+// Verify DataMart webhook signature
+async function verifyDatamartSignature(req, res, next) {
   try {
     const settings = await Settings.getSettings();
-    const secret = settings?.ghust?.webhookSecret;
+    const secret = settings?.datamart?.apiKey;
 
     // If no secret is set, skip verification (dev mode)
     if (!secret) {
       return next();
     }
 
-    const signature = req.headers['x-ghust-signature'] || req.headers['x-webhook-signature'];
+    const signature = req.headers['x-api-key'] || req.headers['x-webhook-signature'];
     if (!signature) {
       return res.status(401).json({ status: 'error', message: 'Missing webhook signature' });
     }
 
-    const payload = JSON.stringify(req.body);
-    const expectedSignature = crypto
-      .createHmac('sha256', secret)
-      .update(payload)
-      .digest('hex');
-
-    if (signature !== expectedSignature) {
+    if (signature !== secret) {
       return res.status(401).json({ status: 'error', message: 'Invalid webhook signature' });
     }
 
@@ -40,22 +34,21 @@ async function verifyGhustSignature(req, res, next) {
   }
 }
 
-// POST /api/webhook/ghust - Ghust order status webhook
-// Handles both direct user purchases and store buyer purchases
-router.post('/ghust', verifyGhustSignature, async (req, res) => {
+// POST /api/webhook/datamart - DataMart order status webhook
+router.post('/datamart', verifyDatamartSignature, async (req, res) => {
   try {
     const { reference, orderReference, status, message } = req.body;
 
-    const ghustRef = reference || orderReference;
-    if (!ghustRef || !status) {
+    const dmRef = reference || orderReference;
+    if (!dmRef || !status) {
       return res.status(400).json({ status: 'error', message: 'Missing reference or status' });
     }
 
-    // Find the purchase by ghust reference
+    // Find the purchase by datamart reference
     const purchase = await DataPurchase.findOne({
       $or: [
-        { ghustReference: ghustRef },
-        { reference: ghustRef },
+        { datamartReference: dmRef },
+        { reference: dmRef },
       ],
     });
 
@@ -113,7 +106,7 @@ router.post('/ghust', verifyGhustSignature, async (req, res) => {
             balanceAfter: user.walletBalance,
             status: 'completed',
             reference: generateReference('RFD'),
-            description: `Auto-refund: failed ${purchase.capacity}GB ${purchase.network} order (Ghust)`,
+            description: `Auto-refund: failed ${purchase.capacity}GB ${purchase.network} order`,
           });
         }
       }
@@ -127,7 +120,7 @@ router.post('/ghust', verifyGhustSignature, async (req, res) => {
 
     res.json({ status: 'success', message: 'Webhook processed' });
   } catch (err) {
-    console.error('Ghust webhook error:', err.message);
+    console.error('DataMart webhook error:', err.message);
     res.status(500).json({ status: 'error', message: 'Webhook processing failed' });
   }
 });
@@ -240,22 +233,20 @@ router.post('/paystack', verifyPaystackSignature, async (req, res) => {
         price: metadata.price,
         costPrice,
         reference,
-        provider: 'ghust',
+        provider: 'datamart',
         status: 'pending',
         purchaseSource: 'direct',
       });
 
-      // Send to Ghust
+      // Send to DataMart
       try {
-        const ghustService = require('../services/ghustService');
-        const callbackUrl = `${process.env.API_URL || 'http://localhost:4000'}/api/webhook/ghust`;
-        const result = await ghustService.purchaseData({
+        const datamartService = require('../services/datamartService');
+        const result = await datamartService.purchaseData({
           network: metadata.network,
           capacity: metadata.capacity,
           phoneNumber: metadata.phoneNumber,
-          callbackUrl,
         });
-        purchase.ghustReference = result?.reference || result?.orderReference;
+        purchase.datamartReference = result?.reference || result?.orderReference;
         purchase.status = 'processing';
         await purchase.save();
       } catch (err) {
@@ -292,7 +283,7 @@ router.post('/paystack', verifyPaystackSignature, async (req, res) => {
         price: metadata.price,
         costPrice: guestCostPrice,
         reference,
-        provider: 'ghust',
+        provider: 'datamart',
         status: 'pending',
         purchaseSource: 'guest',
         guestEmail: metadata.email,
@@ -300,15 +291,13 @@ router.post('/paystack', verifyPaystackSignature, async (req, res) => {
       });
 
       try {
-        const ghustService = require('../services/ghustService');
-        const callbackUrl = `${process.env.API_URL || 'http://localhost:4000'}/api/webhook/ghust`;
-        const result = await ghustService.purchaseData({
+        const datamartService = require('../services/datamartService');
+        const result = await datamartService.purchaseData({
           network: metadata.network,
           capacity: metadata.capacity,
           phoneNumber: metadata.phoneNumber,
-          callbackUrl,
         });
-        purchase.ghustReference = result?.reference || result?.orderReference;
+        purchase.datamartReference = result?.reference || result?.orderReference;
         purchase.status = 'processing';
         await purchase.save();
       } catch (err) {
@@ -344,7 +333,7 @@ router.post('/paystack', verifyPaystackSignature, async (req, res) => {
         price: metadata.sellingPrice,
         costPrice: metadata.basePrice,
         reference,
-        provider: 'ghust',
+        provider: 'datamart',
         status: 'pending',
         purchaseSource: 'store',
         storeDetails: {
@@ -356,17 +345,15 @@ router.post('/paystack', verifyPaystackSignature, async (req, res) => {
         },
       });
 
-      // Send to Ghust
+      // Send to DataMart
       try {
-        const ghustService = require('../services/ghustService');
-        const callbackUrl = `${process.env.API_URL || 'http://localhost:4000'}/api/webhook/ghust`;
-        const result = await ghustService.purchaseData({
+        const datamartService = require('../services/datamartService');
+        const result = await datamartService.purchaseData({
           network: metadata.network,
           capacity: metadata.capacity,
           phoneNumber: metadata.phoneNumber,
-          callbackUrl,
         });
-        purchase.ghustReference = result?.reference || result?.orderReference;
+        purchase.datamartReference = result?.reference || result?.orderReference;
         purchase.status = 'processing';
         await purchase.save();
       } catch (err) {

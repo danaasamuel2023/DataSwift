@@ -35,7 +35,7 @@ const DataPurchaseSchema = new mongoose.Schema({
   provider: {
     type: String,
     enum: ['datamart', 'ghust'],
-    default: 'ghust'
+    default: 'datamart'
   },
   datamartReference: String,
   datamartOrderId: String,

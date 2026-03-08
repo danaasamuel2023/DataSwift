@@ -4,7 +4,7 @@ const StoreProduct = require('../models/StoreProduct');
 const User = require('../models/User');
 const DataPurchase = require('../models/DataPurchase');
 const paystackService = require('../services/paystackService');
-const ghustService = require('../services/ghustService');
+const datamartService = require('../services/datamartService');
 const { generateReference } = require('../utils/helpers');
 
 // GET /api/shop/:slug
@@ -125,7 +125,7 @@ router.get('/:slug/verify-payment', async (req, res) => {
       price: meta.sellingPrice,
       costPrice: meta.basePrice,
       reference,
-      provider: 'ghust',
+      provider: 'datamart',
       status: 'pending',
       purchaseSource: 'store',
       storeDetails: {
@@ -135,16 +135,14 @@ router.get('/:slug/verify-payment', async (req, res) => {
       },
     });
 
-    // Send to Ghust with webhook callback
+    // Send to DataMart
     try {
-      const callbackUrl = `${process.env.API_URL || 'http://localhost:4000'}/api/webhook/ghust`;
-      const result = await ghustService.purchaseData({
+      const result = await datamartService.purchaseData({
         network: meta.network,
         capacity: meta.capacity,
         phoneNumber: meta.phoneNumber,
-        callbackUrl,
       });
-      purchase.ghustReference = result?.reference || result?.orderReference;
+      purchase.datamartReference = result?.reference || result?.orderReference;
       purchase.status = 'processing';
       await purchase.save();
 

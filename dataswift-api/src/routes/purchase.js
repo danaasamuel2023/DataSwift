@@ -5,7 +5,7 @@ const Transaction = require('../models/Transaction');
 const DataPurchase = require('../models/DataPurchase');
 const Settings = require('../models/Settings');
 const datamartService = require('../services/datamartService');
-const ghustService = require('../services/ghustService');
+// All purchases go through DataMart
 const paystackService = require('../services/paystackService');
 const referralService = require('../services/referralService');
 const { generateReference } = require('../utils/helpers');
@@ -188,16 +188,15 @@ router.post('/buy', auth, async (req, res) => {
       price,
       costPrice,
       reference,
-      provider: 'ghust',
+      provider: 'datamart',
       status: 'pending',
       purchaseSource: 'direct',
     });
 
-    // Send to Ghust with webhook callback
+    // Send to DataMart
     try {
-      const callbackUrl = `${process.env.API_URL || 'http://localhost:4000'}/api/webhook/ghust`;
-      const result = await ghustService.purchaseData({ network, capacity, phoneNumber, callbackUrl });
-      purchase.ghustReference = result?.reference || result?.orderReference;
+      const result = await datamartService.purchaseData({ network, capacity, phoneNumber });
+      purchase.datamartReference = result?.reference || result?.orderReference;
       purchase.status = 'processing';
       await purchase.save();
     } catch (err) {
