@@ -74,12 +74,11 @@ UserSchema.pre('save', async function(next) {
 });
 
 // Generate referral code before saving new user
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', async function() {
   if (this.isNew && !this.referralCode) {
     this.referralCode = this.name.substring(0, 3).toUpperCase() +
       Math.random().toString(36).substring(2, 6).toUpperCase();
   }
-  next();
 });
 
 UserSchema.methods.comparePassword = async function(candidatePassword) {
