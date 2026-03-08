@@ -218,10 +218,19 @@ router.post('/paystack', verifyPaystackSignature, async (req, res) => {
         return res.json({ status: 'success', message: 'Already processed' });
       }
 
-      // Look up cost price
+      // Re-fetch prices from backend settings (never trust metadata prices)
       const settings = await Settings.getSettings();
+      const sellingPrices = settings?.pricing?.sellingPrices || {};
       const basePrices = settings?.pricing?.basePrices || {};
+      const verifiedPrice = (sellingPrices[metadata.network] || {})[String(metadata.capacity)] || 0;
       const costPrice = (basePrices[metadata.network] || {})[String(metadata.capacity)] || 0;
+
+      // Verify the amount paid matches the current price
+      const paidAmount = data.amount / 100; // Paystack sends amount in kobo/pesewas
+      if (verifiedPrice <= 0 || paidAmount < verifiedPrice) {
+        console.error(`Price mismatch: paid ${paidAmount}, expected ${verifiedPrice} for ${metadata.network} ${metadata.capacity}GB`);
+        return res.status(400).json({ status: 'error', message: 'Payment amount does not match current price' });
+      }
 
       // Create purchase record
       const purchase = await DataPurchase.create({
@@ -229,7 +238,7 @@ router.post('/paystack', verifyPaystackSignature, async (req, res) => {
         phoneNumber: metadata.phoneNumber,
         network: metadata.network,
         capacity: metadata.capacity,
-        price: metadata.price,
+        price: verifiedPrice,
         costPrice,
         reference,
         provider: 'datamart',
@@ -257,7 +266,7 @@ router.post('/paystack', verifyPaystackSignature, async (req, res) => {
 
       // Process referral commission
       const referralService = require('../services/referralService');
-      referralService.processCommission(metadata.userId, metadata.price, purchase._id);
+      referralService.processCommission(metadata.userId, verifiedPrice, purchase._id);
 
       return res.json({ status: 'success', message: 'Direct purchase processed' });
     }
@@ -269,17 +278,26 @@ router.post('/paystack', verifyPaystackSignature, async (req, res) => {
         return res.json({ status: 'success', message: 'Already processed' });
       }
 
-      // Look up cost price
+      // Re-fetch prices from backend settings (never trust metadata prices)
       const guestSettings = await Settings.getSettings();
+      const guestSellingPrices = guestSettings?.pricing?.sellingPrices || {};
       const guestBasePrices = guestSettings?.pricing?.basePrices || {};
+      const guestVerifiedPrice = (guestSellingPrices[metadata.network] || {})[String(metadata.capacity)] || 0;
       const guestCostPrice = (guestBasePrices[metadata.network] || {})[String(metadata.capacity)] || 0;
+
+      // Verify the amount paid matches the current price
+      const guestPaidAmount = data.amount / 100;
+      if (guestVerifiedPrice <= 0 || guestPaidAmount < guestVerifiedPrice) {
+        console.error(`Guest price mismatch: paid ${guestPaidAmount}, expected ${guestVerifiedPrice}`);
+        return res.status(400).json({ status: 'error', message: 'Payment amount does not match current price' });
+      }
 
       const purchase = await DataPurchase.create({
         userId: null,
         phoneNumber: metadata.phoneNumber,
         network: metadata.network,
         capacity: metadata.capacity,
-        price: metadata.price,
+        price: guestVerifiedPrice,
         costPrice: guestCostPrice,
         reference,
         provider: 'datamart',
@@ -321,7 +339,19 @@ router.post('/paystack', verifyPaystackSignature, async (req, res) => {
         return res.status(404).json({ status: 'error', message: 'Store not found' });
       }
 
-      const agentProfit = metadata.sellingPrice - metadata.basePrice;
+      // Re-fetch prices from store products and backend settings (never trust metadata)
+      const StoreProduct = require('../models/StoreProduct');
+      const storeProduct = await StoreProduct.findOne({
+        storeId: store._id,
+        network: metadata.network,
+        capacity: metadata.capacity,
+        isActive: true,
+      });
+      const storeSettings = await Settings.getSettings();
+      const storeBasePrices = storeSettings?.pricing?.basePrices || {};
+      const verifiedSellingPrice = storeProduct?.sellingPrice || metadata.sellingPrice;
+      const verifiedBasePrice = (storeBasePrices[metadata.network] || {})[String(metadata.capacity)] || storeProduct?.basePrice || 0;
+      const agentProfit = verifiedSellingPrice - verifiedBasePrice;
 
       // Create purchase record
       const purchase = await DataPurchase.create({
@@ -329,8 +359,8 @@ router.post('/paystack', verifyPaystackSignature, async (req, res) => {
         phoneNumber: metadata.phoneNumber,
         network: metadata.network,
         capacity: metadata.capacity,
-        price: metadata.sellingPrice,
-        costPrice: metadata.basePrice,
+        price: verifiedSellingPrice,
+        costPrice: verifiedBasePrice,
         reference,
         provider: 'datamart',
         status: 'pending',
@@ -340,7 +370,7 @@ router.post('/paystack', verifyPaystackSignature, async (req, res) => {
           storeName: store.storeName,
           agentId: store.agentId,
           agentProfit,
-          sellingPrice: metadata.sellingPrice,
+          sellingPrice: verifiedSellingPrice,
         },
       });
 

@@ -117,7 +117,19 @@ router.get('/:slug/verify-payment', async (req, res) => {
       return res.json({ status: 'success', message: 'Already processed', data: existing });
     }
 
-    const agentProfit = meta.sellingPrice - meta.basePrice;
+    // Re-fetch prices from store products and backend settings (never trust metadata)
+    const Settings = require('../models/Settings');
+    const verifyProduct = await StoreProduct.findOne({
+      storeId: store._id,
+      network: meta.network,
+      capacity: meta.capacity,
+      isActive: true,
+    });
+    const storeSettings = await Settings.getSettings();
+    const storeBasePrices = storeSettings?.pricing?.basePrices || {};
+    const verifiedSellingPrice = verifyProduct?.sellingPrice || meta.sellingPrice;
+    const verifiedBasePrice = (storeBasePrices[meta.network] || {})[String(meta.capacity)] || verifyProduct?.basePrice || 0;
+    const agentProfit = verifiedSellingPrice - verifiedBasePrice;
 
     // Create purchase
     const purchase = await DataPurchase.create({
@@ -125,8 +137,8 @@ router.get('/:slug/verify-payment', async (req, res) => {
       phoneNumber: meta.phoneNumber,
       network: meta.network,
       capacity: meta.capacity,
-      price: meta.sellingPrice,
-      costPrice: meta.basePrice,
+      price: verifiedSellingPrice,
+      costPrice: verifiedBasePrice,
       reference,
       provider: 'datamart',
       status: 'pending',
