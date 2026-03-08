@@ -67,10 +67,9 @@ UserSchema.index({ phoneNumber: 1 });
 UserSchema.index({ referralCode: 1 });
 
 // Hash password before saving
-UserSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
+UserSchema.pre('save', async function() {
+  if (!this.isModified('password')) return;
   this.password = await bcrypt.hash(this.password, 12);
-  next();
 });
 
 // Generate referral code before saving new user
