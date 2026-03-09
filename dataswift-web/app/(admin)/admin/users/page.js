@@ -1,8 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Search, Loader2, ShieldCheck, ShieldOff, UserCheck, UserX } from 'lucide-react';
+import { Search, Loader2, ShieldCheck, ShieldOff, UserCheck, UserX, Wallet, ChevronDown, X } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
+import Button from '@/components/ui/Button';
 import { formatCurrency, formatDate } from '@/lib/constants';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
@@ -12,6 +13,10 @@ export default function AdminUsersPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [updating, setUpdating] = useState(null);
+  const [creditModal, setCreditModal] = useState(null); // user object or null
+  const [creditAmount, setCreditAmount] = useState('');
+  const [creditType, setCreditType] = useState('credit'); // 'credit' or 'debit'
+  const [expandedUser, setExpandedUser] = useState(null);
 
   useEffect(() => {
     fetchUsers();
@@ -22,7 +27,7 @@ export default function AdminUsersPage() {
       const res = await api.get('/admin/users');
       setUsers(res.data.data || []);
     } catch {
-      // silently fail
+      toast.error('Failed to load users');
     } finally {
       setLoading(false);
     }
@@ -45,16 +50,52 @@ export default function AdminUsersPage() {
   const toggleRole = (user) => {
     const newRole = user.role === 'admin' ? 'user' : 'admin';
     const msg = newRole === 'admin'
-      ? `Make ${user.name} an admin?`
-      : `Remove admin from ${user.name}?`;
+      ? `Make ${user.name} an admin? They will have full access to the admin panel.`
+      : `Remove admin role from ${user.name}?`;
     updateUser(user._id, { role: newRole }, msg);
   };
 
   const toggleActive = (user) => {
-    const msg = user.isActive
+    const msg = user.isActive !== false
       ? `Deactivate ${user.name}? They won't be able to log in.`
       : `Reactivate ${user.name}?`;
-    updateUser(user._id, { isActive: !user.isActive }, msg);
+    updateUser(user._id, { isActive: user.isActive === false ? true : false }, msg);
+  };
+
+  const handleCreditDebit = async () => {
+    const amount = parseFloat(creditAmount);
+    if (!amount || amount <= 0) {
+      toast.error('Enter a valid amount');
+      return;
+    }
+
+    const user = creditModal;
+    const newBalance = creditType === 'credit'
+      ? (user.walletBalance || 0) + amount
+      : (user.walletBalance || 0) - amount;
+
+    if (newBalance < 0) {
+      toast.error('Balance cannot go below zero');
+      return;
+    }
+
+    const action = creditType === 'credit' ? 'Credit' : 'Debit';
+    const msg = `${action} GH\u20B5${amount.toFixed(2)} ${creditType === 'credit' ? 'to' : 'from'} ${user.name}?\n\nCurrent balance: GH\u20B5${(user.walletBalance || 0).toFixed(2)}\nNew balance: GH\u20B5${newBalance.toFixed(2)}`;
+
+    if (!confirm(msg)) return;
+
+    setUpdating(user._id);
+    try {
+      const res = await api.put(`/admin/users/${user._id}`, { walletBalance: newBalance });
+      setUsers(prev => prev.map(u => u._id === user._id ? res.data.data : u));
+      toast.success(`${action}ed GH\u20B5${amount.toFixed(2)} ${creditType === 'credit' ? 'to' : 'from'} ${user.name}`);
+      setCreditModal(null);
+      setCreditAmount('');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update balance');
+    } finally {
+      setUpdating(null);
+    }
   };
 
   const filtered = users.filter(u => {
@@ -81,79 +122,273 @@ export default function AdminUsersPage() {
         <div className="flex items-center justify-center py-16">
           <Loader2 className="w-6 h-6 text-primary animate-spin" />
         </div>
-      ) : (
-        <Card className="!p-0 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-secondary/[0.06]">
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">User</th>
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Phone</th>
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Balance</th>
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Role</th>
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Status</th>
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Joined</th>
-                  <th className="text-right text-xs font-semibold text-secondary/40 px-5 py-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map(u => (
-                  <tr key={u._id} className="border-b border-secondary/[0.04] last:border-0 hover:bg-secondary/[0.02]">
-                    <td className="px-5 py-3">
-                      <p className="font-semibold text-sm text-secondary">{u.name}</p>
-                      <p className="text-xs text-secondary/40">{u.email}</p>
-                    </td>
-                    <td className="px-5 py-3 text-sm text-secondary/60">{u.phoneNumber || '—'}</td>
-                    <td className="px-5 py-3 text-sm font-bold text-secondary">{formatCurrency(u.walletBalance || 0)}</td>
-                    <td className="px-5 py-3">
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                        u.role === 'admin' ? 'bg-primary/10 text-primary' : 'bg-secondary/[0.06] text-secondary/50'
-                      }`}>
-                        {u.role}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3">
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                        u.isActive !== false ? 'bg-success/10 text-success' : 'bg-red-50 text-red-500'
-                      }`}>
-                        {u.isActive !== false ? 'active' : 'disabled'}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3 text-xs text-secondary/40">{formatDate(u.createdAt)}</td>
-                    <td className="px-5 py-3">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          onClick={() => toggleRole(u)}
-                          disabled={updating === u._id}
-                          title={u.role === 'admin' ? 'Remove admin' : 'Make admin'}
-                          className={`p-1.5 rounded-lg transition-colors ${
-                            u.role === 'admin'
-                              ? 'text-primary hover:bg-primary/10'
-                              : 'text-secondary/30 hover:bg-secondary/[0.06] hover:text-secondary/60'
-                          }`}
-                        >
-                          {u.role === 'admin' ? <ShieldCheck className="w-4 h-4" /> : <ShieldOff className="w-4 h-4" />}
-                        </button>
-                        <button
-                          onClick={() => toggleActive(u)}
-                          disabled={updating === u._id}
-                          title={u.isActive !== false ? 'Deactivate' : 'Activate'}
-                          className={`p-1.5 rounded-lg transition-colors ${
-                            u.isActive !== false
-                              ? 'text-success hover:bg-success/10'
-                              : 'text-red-400 hover:bg-red-50'
-                          }`}
-                        >
-                          {u.isActive !== false ? <UserCheck className="w-4 h-4" /> : <UserX className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      ) : filtered.length === 0 ? (
+        <Card>
+          <p className="text-center text-secondary/40 py-8">No users found</p>
         </Card>
+      ) : (
+        <>
+          {/* Desktop Table */}
+          <Card className="!p-0 overflow-hidden hidden md:block">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-secondary/[0.06]">
+                    <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">User</th>
+                    <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Phone</th>
+                    <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Balance</th>
+                    <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Role</th>
+                    <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Status</th>
+                    <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Joined</th>
+                    <th className="text-right text-xs font-semibold text-secondary/40 px-5 py-3">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map(u => (
+                    <tr key={u._id} className="border-b border-secondary/[0.04] last:border-0 hover:bg-secondary/[0.02]">
+                      <td className="px-5 py-3">
+                        <p className="font-semibold text-sm text-secondary">{u.name}</p>
+                        <p className="text-xs text-secondary/40">{u.email}</p>
+                      </td>
+                      <td className="px-5 py-3 text-sm text-secondary/60">{u.phoneNumber || '\u2014'}</td>
+                      <td className="px-5 py-3 text-sm font-bold text-secondary">{formatCurrency(u.walletBalance || 0)}</td>
+                      <td className="px-5 py-3">
+                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                          u.role === 'admin' ? 'bg-primary/10 text-primary' : 'bg-secondary/[0.06] text-secondary/50'
+                        }`}>
+                          {u.role}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3">
+                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                          u.isActive !== false ? 'bg-success/10 text-success' : 'bg-red-50 text-red-500'
+                        }`}>
+                          {u.isActive !== false ? 'active' : 'disabled'}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3 text-xs text-secondary/40">{formatDate(u.createdAt)}</td>
+                      <td className="px-5 py-3">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => { setCreditModal(u); setCreditType('credit'); setCreditAmount(''); }}
+                            disabled={updating === u._id}
+                            title="Credit / Debit wallet"
+                            className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-success/10 text-success hover:bg-success/20 transition-colors"
+                          >
+                            <Wallet className="w-3.5 h-3.5 inline mr-1" />
+                            Wallet
+                          </button>
+                          <button
+                            onClick={() => toggleRole(u)}
+                            disabled={updating === u._id}
+                            title={u.role === 'admin' ? 'Remove admin' : 'Make admin'}
+                            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                              u.role === 'admin'
+                                ? 'bg-primary/10 text-primary hover:bg-primary/20'
+                                : 'bg-secondary/[0.06] text-secondary/50 hover:bg-secondary/[0.1]'
+                            }`}
+                          >
+                            {u.role === 'admin' ? (
+                              <><ShieldCheck className="w-3.5 h-3.5 inline mr-1" />Admin</>
+                            ) : (
+                              <><ShieldOff className="w-3.5 h-3.5 inline mr-1" />User</>
+                            )}
+                          </button>
+                          <button
+                            onClick={() => toggleActive(u)}
+                            disabled={updating === u._id}
+                            title={u.isActive !== false ? 'Deactivate' : 'Activate'}
+                            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                              u.isActive !== false
+                                ? 'bg-red-50 text-red-400 hover:bg-red-100'
+                                : 'bg-success/10 text-success hover:bg-success/20'
+                            }`}
+                          >
+                            {u.isActive !== false ? (
+                              <><UserX className="w-3.5 h-3.5 inline mr-1" />Deactivate</>
+                            ) : (
+                              <><UserCheck className="w-3.5 h-3.5 inline mr-1" />Activate</>
+                            )}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+
+          {/* Mobile Cards */}
+          <div className="md:hidden space-y-3">
+            {filtered.map(u => (
+              <Card key={u._id} className="!p-0">
+                <button
+                  onClick={() => setExpandedUser(expandedUser === u._id ? null : u._id)}
+                  className="w-full px-4 py-3 flex items-center justify-between"
+                >
+                  <div className="text-left">
+                    <p className="font-semibold text-sm text-secondary">{u.name}</p>
+                    <p className="text-xs text-secondary/40">{u.email}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-secondary">{formatCurrency(u.walletBalance || 0)}</span>
+                    <ChevronDown className={`w-4 h-4 text-secondary/30 transition-transform ${expandedUser === u._id ? 'rotate-180' : ''}`} />
+                  </div>
+                </button>
+
+                {expandedUser === u._id && (
+                  <div className="px-4 pb-4 border-t border-secondary/[0.06] pt-3 space-y-3">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-secondary/40">Phone</span>
+                      <span className="text-secondary/60">{u.phoneNumber || '\u2014'}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-secondary/40">Role</span>
+                      <span className={`font-semibold px-2 py-0.5 rounded-full ${
+                        u.role === 'admin' ? 'bg-primary/10 text-primary' : 'bg-secondary/[0.06] text-secondary/50'
+                      }`}>{u.role}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-secondary/40">Status</span>
+                      <span className={`font-semibold px-2 py-0.5 rounded-full ${
+                        u.isActive !== false ? 'bg-success/10 text-success' : 'bg-red-50 text-red-500'
+                      }`}>{u.isActive !== false ? 'active' : 'disabled'}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-secondary/40">Joined</span>
+                      <span className="text-secondary/60">{formatDate(u.createdAt)}</span>
+                    </div>
+
+                    <div className="flex gap-2 pt-2">
+                      <button
+                        onClick={() => { setCreditModal(u); setCreditType('credit'); setCreditAmount(''); }}
+                        disabled={updating === u._id}
+                        className="flex-1 py-2 rounded-xl text-xs font-bold bg-success/10 text-success hover:bg-success/20 transition-colors"
+                      >
+                        <Wallet className="w-3.5 h-3.5 inline mr-1" /> Wallet
+                      </button>
+                      <button
+                        onClick={() => toggleRole(u)}
+                        disabled={updating === u._id}
+                        className={`flex-1 py-2 rounded-xl text-xs font-bold transition-colors ${
+                          u.role === 'admin' ? 'bg-primary/10 text-primary' : 'bg-secondary/[0.06] text-secondary/50'
+                        }`}
+                      >
+                        {u.role === 'admin' ? 'Remove Admin' : 'Make Admin'}
+                      </button>
+                      <button
+                        onClick={() => toggleActive(u)}
+                        disabled={updating === u._id}
+                        className={`flex-1 py-2 rounded-xl text-xs font-bold transition-colors ${
+                          u.isActive !== false ? 'bg-red-50 text-red-400' : 'bg-success/10 text-success'
+                        }`}
+                      >
+                        {u.isActive !== false ? 'Deactivate' : 'Activate'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </Card>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* Credit/Debit Modal */}
+      {creditModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setCreditModal(null)}>
+          <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-5 border-b border-secondary/[0.06]">
+              <div>
+                <h3 className="font-bold text-secondary">Adjust Wallet</h3>
+                <p className="text-xs text-secondary/40 mt-0.5">{creditModal.name} - {creditModal.email}</p>
+              </div>
+              <button onClick={() => setCreditModal(null)} className="p-1 rounded-lg hover:bg-secondary/[0.06]">
+                <X className="w-4 h-4 text-secondary/40" />
+              </button>
+            </div>
+
+            <div className="p-5 space-y-4">
+              <div className="text-center">
+                <p className="text-xs text-secondary/40">Current Balance</p>
+                <p className="text-2xl font-extrabold text-secondary">{formatCurrency(creditModal.walletBalance || 0)}</p>
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCreditType('credit')}
+                  className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors ${
+                    creditType === 'credit'
+                      ? 'bg-success text-white'
+                      : 'bg-secondary/[0.06] text-secondary/50'
+                  }`}
+                >
+                  + Credit
+                </button>
+                <button
+                  onClick={() => setCreditType('debit')}
+                  className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors ${
+                    creditType === 'debit'
+                      ? 'bg-red-500 text-white'
+                      : 'bg-secondary/[0.06] text-secondary/50'
+                  }`}
+                >
+                  - Debit
+                </button>
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-secondary/50 mb-1.5 block">
+                  Amount (GH\u20B5)
+                </label>
+                <input
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  value={creditAmount}
+                  onChange={e => setCreditAmount(e.target.value)}
+                  placeholder="0.00"
+                  className="w-full px-4 py-3 rounded-xl border border-secondary/[0.1] text-lg font-bold text-secondary focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                  autoFocus
+                />
+              </div>
+
+              {creditAmount && parseFloat(creditAmount) > 0 && (
+                <div className="bg-secondary/[0.03] rounded-xl p-3 text-sm">
+                  <div className="flex justify-between text-secondary/50">
+                    <span>Current</span>
+                    <span>{formatCurrency(creditModal.walletBalance || 0)}</span>
+                  </div>
+                  <div className="flex justify-between text-secondary/50 mt-1">
+                    <span>{creditType === 'credit' ? '+ Credit' : '- Debit'}</span>
+                    <span className={creditType === 'credit' ? 'text-success' : 'text-red-500'}>
+                      {creditType === 'credit' ? '+' : '-'}{formatCurrency(parseFloat(creditAmount))}
+                    </span>
+                  </div>
+                  <div className="flex justify-between font-bold text-secondary mt-2 pt-2 border-t border-secondary/[0.06]">
+                    <span>New Balance</span>
+                    <span>{formatCurrency(
+                      creditType === 'credit'
+                        ? (creditModal.walletBalance || 0) + parseFloat(creditAmount)
+                        : (creditModal.walletBalance || 0) - parseFloat(creditAmount)
+                    )}</span>
+                  </div>
+                </div>
+              )}
+
+              <Button
+                onClick={handleCreditDebit}
+                fullWidth
+                size="lg"
+                loading={updating === creditModal._id}
+                className={creditType === 'debit' ? '!bg-red-500 hover:!bg-red-600' : ''}
+              >
+                {creditType === 'credit' ? 'Credit Wallet' : 'Debit Wallet'}
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

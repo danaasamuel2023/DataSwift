@@ -12,13 +12,9 @@ export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
-  const [testingGhust, setTestingGhust] = useState(false);
   const [form, setForm] = useState({
     datamartApiUrl: '',
     datamartApiKey: '',
-    ghustApiUrl: '',
-    ghustApiKey: '',
-    ghustWebhookSecret: '',
     paystackSecretKey: '',
     paystackPublicKey: '',
     smsApiKey: '',
@@ -39,9 +35,6 @@ export default function AdminSettingsPage() {
       setForm({
         datamartApiUrl: s?.datamart?.apiUrl || '',
         datamartApiKey: s?.datamart?.apiKey || '',
-        ghustApiUrl: s?.ghust?.apiUrl || '',
-        ghustApiKey: s?.ghust?.apiKey || '',
-        ghustWebhookSecret: s?.ghust?.webhookSecret || '',
         paystackSecretKey: s?.paystack?.secretKey || '',
         paystackPublicKey: s?.paystack?.publicKey || '',
         smsApiKey: s?.sms?.apiKey || '',
@@ -61,7 +54,6 @@ export default function AdminSettingsPage() {
     try {
       await api.put('/admin/settings', {
         datamart: { apiUrl: form.datamartApiUrl, apiKey: form.datamartApiKey },
-        ghust: { apiUrl: form.ghustApiUrl, apiKey: form.ghustApiKey, webhookSecret: form.ghustWebhookSecret },
         paystack: { secretKey: form.paystackSecretKey, publicKey: form.paystackPublicKey },
         sms: { apiKey: form.smsApiKey, senderId: form.smsSenderId },
         withdrawal: {
@@ -85,30 +77,13 @@ export default function AdminSettingsPage() {
       if (res.data.data?.connected) {
         toast.success('DataMart API connected successfully!');
       } else {
-        toast.error('Connection failed');
+        toast.error('Connection failed: ' + (res.data.data?.error || 'Unknown error'));
       }
       fetchSettings();
     } catch (err) {
       toast.error(err.response?.data?.message || 'Connection test failed');
     } finally {
       setTesting(false);
-    }
-  };
-
-  const handleTestGhust = async () => {
-    setTestingGhust(true);
-    try {
-      const res = await api.post('/admin/settings/test-ghust');
-      if (res.data.data?.connected) {
-        toast.success('Ghust API connected successfully!');
-      } else {
-        toast.error('Ghust connection failed');
-      }
-      fetchSettings();
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Ghust connection test failed');
-    } finally {
-      setTestingGhust(false);
     }
   };
 
@@ -160,7 +135,7 @@ export default function AdminSettingsPage() {
           <Input
             label="API URL"
             icon={Globe}
-            placeholder="https://api.datamartgh.com"
+            placeholder="https://api.datamartgh.shop"
             value={form.datamartApiUrl}
             onChange={(e) => setForm(prev => ({ ...prev, datamartApiUrl: e.target.value }))}
           />
@@ -178,60 +153,6 @@ export default function AdminSettingsPage() {
         </div>
       </Card>
 
-      {/* Ghust API */}
-      <Card>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center">
-              <Zap className="w-5 h-5 text-green-500" />
-            </div>
-            <div>
-              <h2 className="font-bold text-secondary">Ghust API</h2>
-              <p className="text-xs text-secondary/40">Data fulfillment provider (with webhooks)</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            {settings?.ghust?.isConnected ? (
-              <span className="flex items-center gap-1 text-xs font-semibold text-success">
-                <CheckCircle className="w-4 h-4" /> Connected
-              </span>
-            ) : (
-              <span className="flex items-center gap-1 text-xs font-semibold text-error">
-                <XCircle className="w-4 h-4" /> Not connected
-              </span>
-            )}
-          </div>
-        </div>
-        <div className="space-y-4">
-          <Input
-            label="API URL"
-            icon={Globe}
-            placeholder="https://api.ghust.com"
-            value={form.ghustApiUrl}
-            onChange={(e) => setForm(prev => ({ ...prev, ghustApiUrl: e.target.value }))}
-          />
-          <Input
-            label="API Key"
-            icon={Key}
-            type="password"
-            placeholder="Enter your Ghust API key"
-            value={form.ghustApiKey}
-            onChange={(e) => setForm(prev => ({ ...prev, ghustApiKey: e.target.value }))}
-          />
-          <Input
-            label="Webhook Secret"
-            icon={Key}
-            type="password"
-            placeholder="Secret for verifying webhook signatures"
-            value={form.ghustWebhookSecret}
-            onChange={(e) => setForm(prev => ({ ...prev, ghustWebhookSecret: e.target.value }))}
-          />
-          <Button variant="outline" size="sm" loading={testingGhust} onClick={handleTestGhust}>
-            Test Connection
-          </Button>
-        </div>
-      </Card>
-
       {/* Paystack */}
       <Card>
         <div className="flex items-center gap-3 mb-4">
@@ -240,7 +161,7 @@ export default function AdminSettingsPage() {
           </div>
           <div>
             <h2 className="font-bold text-secondary">Paystack</h2>
-            <p className="text-xs text-secondary/40">Payment gateway</p>
+            <p className="text-xs text-secondary/40">Payment gateway for MoMo and card payments</p>
           </div>
         </div>
         <div className="space-y-4">
