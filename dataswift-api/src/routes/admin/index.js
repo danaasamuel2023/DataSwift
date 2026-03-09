@@ -228,13 +228,29 @@ router.post('/pricing/sync', async (req, res) => {
       basePrices[pkg.network][String(pkg.capacity)] = pkg.price;
     }
 
+    // Also auto-populate selling prices for any bundles that don't have one yet
+    // Default markup: 5% on top of base price, rounded to 2 decimal places
+    const settings = await Settings.getSettings();
+    const existingSellingPrices = settings.pricing && settings.pricing.sellingPrices || {};
+    const sellingPrices = JSON.parse(JSON.stringify(existingSellingPrices));
+
+    for (const network of Object.keys(basePrices)) {
+      if (!sellingPrices[network]) sellingPrices[network] = {};
+      for (const [capacity, basePrice] of Object.entries(basePrices[network])) {
+        // Only set if selling price doesn't already exist for this bundle
+        if (!sellingPrices[network][capacity]) {
+          sellingPrices[network][capacity] = Math.round(basePrice * 1.05 * 100) / 100;
+        }
+      }
+    }
+
     await Settings.findOneAndUpdate(
       { _id: 'app_settings' },
-      { $set: { 'pricing.basePrices': basePrices, 'datamart.isConnected': true } },
+      { $set: { 'pricing.basePrices': basePrices, 'pricing.sellingPrices': sellingPrices, 'datamart.isConnected': true, 'pricing.lastFetchedAt': new Date() } },
       { upsert: true }
     );
 
-    res.json({ status: 'success', message: `Synced ${packages.length} packages`, data: { basePrices } });
+    res.json({ status: 'success', message: `Synced ${packages.length} packages`, data: { basePrices, sellingPrices } });
   } catch (err) {
     console.error('Admin error:', err.message);
     res.status(500).json({ status: 'error', message: 'Something went wrong. Please try again.' });
