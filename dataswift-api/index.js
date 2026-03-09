@@ -15,6 +15,8 @@ app.use(helmet());
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'https://data-swift-drab.vercel.app',
+  'https://www.swiftbundle.shop',
+  'https://swiftbundle.shop',
 ];
 if (process.env.NODE_ENV !== 'production') {
   allowedOrigins.push('http://localhost:3000', 'http://localhost:3001');
