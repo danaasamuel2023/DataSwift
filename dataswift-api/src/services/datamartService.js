@@ -29,7 +29,28 @@ class DataMartService {
     const res = await client.get('/api/developer/data-packages', {
       params: network ? { network } : {},
     });
-    return res.data?.data || [];
+
+    const data = res.data?.data;
+    if (!data) return [];
+
+    // DataMart returns packages grouped by network: { YELLO: [...], TELECEL: [...] }
+    // Flatten into a single array
+    if (Array.isArray(data)) return data;
+
+    const packages = [];
+    for (const [net, pkgs] of Object.entries(data)) {
+      if (Array.isArray(pkgs)) {
+        for (const pkg of pkgs) {
+          packages.push({
+            network: pkg.network || net,
+            capacity: parseFloat(pkg.capacity),
+            price: parseFloat(pkg.price),
+            inStock: pkg.inStock,
+          });
+        }
+      }
+    }
+    return packages;
   }
 
   async purchaseData({ network, capacity, phoneNumber }) {
