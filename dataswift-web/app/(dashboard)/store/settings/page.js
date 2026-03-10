@@ -88,8 +88,8 @@ export default function StoreSettingsPage() {
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Store Settings</h1>
-          <p className="text-secondary/40 text-sm mt-1">Update your store configuration.</p>
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">Store Settings</h1>
+          <p className="text-text-muted text-sm mt-1">Update your store configuration.</p>
         </div>
         <Button loading={saving} onClick={handleSave}>
           <Save className="w-4 h-4" /> Save
@@ -97,7 +97,7 @@ export default function StoreSettingsPage() {
       </div>
 
       <Card>
-        <h2 className="font-bold text-secondary mb-4">Store Details</h2>
+        <h2 className="font-bold text-white mb-4">Store Details</h2>
         <div className="space-y-4">
           <Input
             label="Store name"
@@ -119,7 +119,7 @@ export default function StoreSettingsPage() {
             onChange={(e) => setForm(prev => ({ ...prev, contactPhone: e.target.value }))}
           />
           <div>
-            <label className="block text-xs font-semibold text-secondary/60 mb-2">Store status</label>
+            <label className="block text-xs font-semibold text-text-muted mb-2">Store status</label>
             <button
               onClick={() => setForm(prev => ({ ...prev, isActive: !prev.isActive }))}
               className="flex items-center gap-2 text-sm font-semibold"
@@ -131,8 +131,8 @@ export default function StoreSettingsPage() {
                 </>
               ) : (
                 <>
-                  <ToggleLeft className="w-8 h-8 text-secondary/30" />
-                  <span className="text-secondary/40">Inactive</span>
+                  <ToggleLeft className="w-8 h-8 text-text-muted" />
+                  <span className="text-text-muted">Inactive</span>
                 </>
               )}
             </button>
@@ -141,7 +141,7 @@ export default function StoreSettingsPage() {
       </Card>
 
       <Card>
-        <h2 className="font-bold text-secondary mb-4">Theme</h2>
+        <h2 className="font-bold text-white mb-4">Theme</h2>
         <div className="flex gap-3 flex-wrap">
           {THEME_COLORS.map(color => (
             <button
@@ -157,7 +157,7 @@ export default function StoreSettingsPage() {
       </Card>
 
       <Card>
-        <h2 className="font-bold text-secondary mb-4">MoMo Details</h2>
+        <h2 className="font-bold text-white mb-4">MoMo Details</h2>
         <div className="space-y-4">
           <Input
             label="MoMo number"
@@ -167,7 +167,7 @@ export default function StoreSettingsPage() {
             onChange={(e) => setForm(prev => ({ ...prev, momoNumber: e.target.value }))}
           />
           <div>
-            <label className="block text-xs font-semibold text-secondary/60 mb-1.5">Network</label>
+            <label className="block text-xs font-semibold text-text-muted mb-1.5">Network</label>
             <div className="flex gap-2">
               {['MTN', 'Telecel', 'AirtelTigo'].map(net => (
                 <button
@@ -176,7 +176,7 @@ export default function StoreSettingsPage() {
                   className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
                     form.momoNetwork === net
                       ? 'bg-primary text-white'
-                      : 'bg-secondary/[0.04] text-secondary/60 hover:bg-secondary/[0.08]'
+                      : 'bg-surface-light text-text-muted hover:bg-white/5'
                   }`}
                 >
                   {net}

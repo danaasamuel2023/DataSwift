@@ -39,8 +39,8 @@ export default function AdminTransactionsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Transactions</h1>
-        <p className="text-secondary/40 text-sm mt-1">All platform transactions.</p>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">Transactions</h1>
+        <p className="text-text-muted text-sm mt-1">All platform transactions.</p>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
@@ -53,7 +53,7 @@ export default function AdminTransactionsPage() {
               key={f}
               onClick={() => setFilter(f)}
               className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-                filter === f ? 'bg-primary text-white' : 'bg-secondary/[0.04] text-secondary/50'
+                filter === f ? 'bg-primary text-white' : 'bg-white/[0.04] text-text-muted'
               }`}
             >
               {f === 'all' ? 'All' : f.charAt(0).toUpperCase() + f.slice(1)}
@@ -71,25 +71,25 @@ export default function AdminTransactionsPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-secondary/[0.06]">
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">User</th>
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Type</th>
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Amount</th>
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Status</th>
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Date</th>
+                <tr className="border-b border-white/[0.04]">
+                  <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">User</th>
+                  <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Type</th>
+                  <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Amount</th>
+                  <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Status</th>
+                  <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Date</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map(tx => (
-                  <tr key={tx._id} className="border-b border-secondary/[0.04] last:border-0">
+                  <tr key={tx._id} className="border-b border-white/[0.04] last:border-0">
                     <td className="px-5 py-3">
-                      <p className="font-semibold text-sm text-secondary">{tx.userId?.name || 'Unknown'}</p>
-                      <p className="text-[10px] text-secondary/30">{tx.reference}</p>
+                      <p className="font-semibold text-sm text-white">{tx.userId?.name || 'Unknown'}</p>
+                      <p className="text-[10px] text-text-muted">{tx.reference}</p>
                     </td>
                     <td className="px-5 py-3">
-                      <span className="text-xs font-semibold text-secondary/60">{tx.type}</span>
+                      <span className="text-xs font-semibold text-text-muted">{tx.type}</span>
                     </td>
-                    <td className="px-5 py-3 font-bold text-sm text-secondary">{formatCurrency(tx.amount)}</td>
+                    <td className="px-5 py-3 font-bold text-sm text-white">{formatCurrency(tx.amount)}</td>
                     <td className="px-5 py-3">
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                         tx.status === 'completed' ? 'bg-success/10 text-success' :
@@ -99,7 +99,7 @@ export default function AdminTransactionsPage() {
                         {tx.status}
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-xs text-secondary/40">{formatDate(tx.createdAt)}</td>
+                    <td className="px-5 py-3 text-xs text-text-muted">{formatDate(tx.createdAt)}</td>
                   </tr>
                 ))}
               </tbody>

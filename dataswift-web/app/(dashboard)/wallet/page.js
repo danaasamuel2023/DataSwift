@@ -38,12 +38,12 @@ export default function WalletPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Wallet</h1>
-        <p className="text-secondary/40 text-sm mt-1">Manage your balance and make deposits.</p>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">Wallet</h1>
+        <p className="text-text-muted text-sm mt-1">Manage your balance and make deposits.</p>
       </div>
 
       {/* Balance card */}
-      <Card className="bg-secondary !text-white overflow-hidden relative">
+      <Card className="bg-card !text-white overflow-hidden relative">
         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -translate-y-1/2 translate-x-1/2" />
         <div className="relative">
           <p className="text-white/40 text-sm">Available Balance</p>
@@ -62,7 +62,7 @@ export default function WalletPage() {
       {/* Deposit section */}
       {showDeposit && (
         <Card>
-          <h2 className="font-bold text-secondary mb-4">Deposit Funds</h2>
+          <h2 className="font-bold text-white mb-4">Deposit Funds</h2>
           <div className="space-y-4">
             <Input
               label="Amount (GH₵)"
@@ -79,7 +79,7 @@ export default function WalletPage() {
                   className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
                     amount === String(a)
                       ? 'bg-primary text-white'
-                      : 'bg-secondary/[0.04] text-secondary/60 hover:bg-secondary/[0.08]'
+                      : 'bg-surface-light text-text-muted hover:bg-white/5'
                   }`}
                 >
                   GH₵{a}
@@ -90,7 +90,7 @@ export default function WalletPage() {
               <Wallet className="w-4 h-4" />
               Pay with Paystack
             </Button>
-            <p className="text-xs text-secondary/30 text-center">
+            <p className="text-xs text-text-muted text-center">
               You&apos;ll be redirected to Paystack to complete your payment securely.
             </p>
           </div>
@@ -105,11 +105,11 @@ export default function WalletPage() {
               <ArrowDownLeft className="w-5 h-5 text-success" />
             </div>
             <div>
-              <p className="font-bold text-secondary">Instant top-up</p>
-              <p className="text-xs text-secondary/40">Via Mobile Money or Card</p>
+              <p className="font-bold text-white">Instant top-up</p>
+              <p className="text-xs text-text-muted">Via Mobile Money or Card</p>
             </div>
           </div>
-          <p className="text-xs text-secondary/40">Deposits are credited instantly after successful payment.</p>
+          <p className="text-xs text-text-muted">Deposits are credited instantly after successful payment.</p>
         </Card>
         <Card>
           <div className="flex items-center gap-3 mb-3">
@@ -117,11 +117,11 @@ export default function WalletPage() {
               <ArrowUpRight className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="font-bold text-secondary">Secure payments</p>
-              <p className="text-xs text-secondary/40">PCI-DSS compliant</p>
+              <p className="font-bold text-white">Secure payments</p>
+              <p className="text-xs text-text-muted">PCI-DSS compliant</p>
             </div>
           </div>
-          <p className="text-xs text-secondary/40">All payments are processed securely through Paystack.</p>
+          <p className="text-xs text-text-muted">All payments are processed securely through Paystack.</p>
         </Card>
       </div>
     </div>

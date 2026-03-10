@@ -3,7 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata = {
-  title: 'DataSwift - Instant Data Bundles',
+  title: 'SwiftBundle - Instant Data Bundles',
   description: 'Buy affordable data bundles instantly. MTN, Telecel & AirtelTigo. Fast delivery, best prices in Ghana.',
 };
 
@@ -23,10 +23,11 @@ export default function RootLayout({ children }) {
             toastOptions={{
               duration: 4000,
               style: {
-                background: '#1A1A2E',
-                color: '#fff',
+                background: '#12121A',
+                color: '#E2E8F0',
                 borderRadius: '12px',
-                fontSize: '14px'
+                fontSize: '14px',
+                border: '1px solid rgba(255,255,255,0.06)',
               },
               success: { iconTheme: { primary: '#10B981', secondary: '#fff' } },
               error: { iconTheme: { primary: '#EF4444', secondary: '#fff' } }

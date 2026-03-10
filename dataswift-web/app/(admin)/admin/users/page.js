@@ -107,8 +107,8 @@ export default function AdminUsersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Users</h1>
-        <p className="text-secondary/40 text-sm mt-1">{users.length} registered users</p>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">Users</h1>
+        <p className="text-text-muted text-sm mt-1">{users.length} registered users</p>
       </div>
 
       <Input
@@ -124,7 +124,7 @@ export default function AdminUsersPage() {
         </div>
       ) : filtered.length === 0 ? (
         <Card>
-          <p className="text-center text-secondary/40 py-8">No users found</p>
+          <p className="text-center text-text-muted py-8">No users found</p>
         </Card>
       ) : (
         <>
@@ -133,40 +133,40 @@ export default function AdminUsersPage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-secondary/[0.06]">
-                    <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">User</th>
-                    <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Phone</th>
-                    <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Balance</th>
-                    <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Role</th>
-                    <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Status</th>
-                    <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Joined</th>
-                    <th className="text-right text-xs font-semibold text-secondary/40 px-5 py-3">Actions</th>
+                  <tr className="border-b border-white/[0.04]">
+                    <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">User</th>
+                    <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Phone</th>
+                    <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Balance</th>
+                    <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Role</th>
+                    <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Status</th>
+                    <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Joined</th>
+                    <th className="text-right text-xs font-semibold text-text-muted px-5 py-3">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.map(u => (
-                    <tr key={u._id} className="border-b border-secondary/[0.04] last:border-0 hover:bg-secondary/[0.02]">
+                    <tr key={u._id} className="border-b border-white/[0.04] last:border-0 hover:bg-white/5">
                       <td className="px-5 py-3">
-                        <p className="font-semibold text-sm text-secondary">{u.name}</p>
-                        <p className="text-xs text-secondary/40">{u.email}</p>
+                        <p className="font-semibold text-sm text-white">{u.name}</p>
+                        <p className="text-xs text-text-muted">{u.email}</p>
                       </td>
-                      <td className="px-5 py-3 text-sm text-secondary/60">{u.phoneNumber || '\u2014'}</td>
-                      <td className="px-5 py-3 text-sm font-bold text-secondary">{formatCurrency(u.walletBalance || 0)}</td>
+                      <td className="px-5 py-3 text-sm text-text-muted">{u.phoneNumber || '\u2014'}</td>
+                      <td className="px-5 py-3 text-sm font-bold text-white">{formatCurrency(u.walletBalance || 0)}</td>
                       <td className="px-5 py-3">
                         <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                          u.role === 'admin' ? 'bg-primary/10 text-primary' : 'bg-secondary/[0.06] text-secondary/50'
+                          u.role === 'admin' ? 'bg-primary/10 text-primary' : 'bg-white/[0.06] text-text-muted'
                         }`}>
                           {u.role}
                         </span>
                       </td>
                       <td className="px-5 py-3">
                         <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                          u.isActive !== false ? 'bg-success/10 text-success' : 'bg-red-50 text-red-500'
+                          u.isActive !== false ? 'bg-success/10 text-success' : 'bg-error/10 text-error'
                         }`}>
                           {u.isActive !== false ? 'active' : 'disabled'}
                         </span>
                       </td>
-                      <td className="px-5 py-3 text-xs text-secondary/40">{formatDate(u.createdAt)}</td>
+                      <td className="px-5 py-3 text-xs text-text-muted">{formatDate(u.createdAt)}</td>
                       <td className="px-5 py-3">
                         <div className="flex items-center justify-end gap-1.5">
                           <button
@@ -185,7 +185,7 @@ export default function AdminUsersPage() {
                             className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                               u.role === 'admin'
                                 ? 'bg-primary/10 text-primary hover:bg-primary/20'
-                                : 'bg-secondary/[0.06] text-secondary/50 hover:bg-secondary/[0.1]'
+                                : 'bg-white/[0.06] text-text-muted hover:bg-white/10'
                             }`}
                           >
                             {u.role === 'admin' ? (
@@ -200,7 +200,7 @@ export default function AdminUsersPage() {
                             title={u.isActive !== false ? 'Deactivate' : 'Activate'}
                             className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                               u.isActive !== false
-                                ? 'bg-red-50 text-red-400 hover:bg-red-100'
+                                ? 'bg-error/10 text-error hover:bg-error/20'
                                 : 'bg-success/10 text-success hover:bg-success/20'
                             }`}
                           >
@@ -228,36 +228,36 @@ export default function AdminUsersPage() {
                   className="w-full px-4 py-3 flex items-center justify-between"
                 >
                   <div className="text-left">
-                    <p className="font-semibold text-sm text-secondary">{u.name}</p>
-                    <p className="text-xs text-secondary/40">{u.email}</p>
+                    <p className="font-semibold text-sm text-white">{u.name}</p>
+                    <p className="text-xs text-text-muted">{u.email}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-secondary">{formatCurrency(u.walletBalance || 0)}</span>
-                    <ChevronDown className={`w-4 h-4 text-secondary/30 transition-transform ${expandedUser === u._id ? 'rotate-180' : ''}`} />
+                    <span className="text-sm font-bold text-white">{formatCurrency(u.walletBalance || 0)}</span>
+                    <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${expandedUser === u._id ? 'rotate-180' : ''}`} />
                   </div>
                 </button>
 
                 {expandedUser === u._id && (
-                  <div className="px-4 pb-4 border-t border-secondary/[0.06] pt-3 space-y-3">
+                  <div className="px-4 pb-4 border-t border-white/[0.04] pt-3 space-y-3">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-secondary/40">Phone</span>
-                      <span className="text-secondary/60">{u.phoneNumber || '\u2014'}</span>
+                      <span className="text-text-muted">Phone</span>
+                      <span className="text-text-muted">{u.phoneNumber || '\u2014'}</span>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-secondary/40">Role</span>
+                      <span className="text-text-muted">Role</span>
                       <span className={`font-semibold px-2 py-0.5 rounded-full ${
-                        u.role === 'admin' ? 'bg-primary/10 text-primary' : 'bg-secondary/[0.06] text-secondary/50'
+                        u.role === 'admin' ? 'bg-primary/10 text-primary' : 'bg-white/[0.06] text-text-muted'
                       }`}>{u.role}</span>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-secondary/40">Status</span>
+                      <span className="text-text-muted">Status</span>
                       <span className={`font-semibold px-2 py-0.5 rounded-full ${
-                        u.isActive !== false ? 'bg-success/10 text-success' : 'bg-red-50 text-red-500'
+                        u.isActive !== false ? 'bg-success/10 text-success' : 'bg-error/10 text-error'
                       }`}>{u.isActive !== false ? 'active' : 'disabled'}</span>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-secondary/40">Joined</span>
-                      <span className="text-secondary/60">{formatDate(u.createdAt)}</span>
+                      <span className="text-text-muted">Joined</span>
+                      <span className="text-text-muted">{formatDate(u.createdAt)}</span>
                     </div>
 
                     <div className="flex gap-2 pt-2">
@@ -272,7 +272,7 @@ export default function AdminUsersPage() {
                         onClick={() => toggleRole(u)}
                         disabled={updating === u._id}
                         className={`flex-1 py-2 rounded-xl text-xs font-bold transition-colors ${
-                          u.role === 'admin' ? 'bg-primary/10 text-primary' : 'bg-secondary/[0.06] text-secondary/50'
+                          u.role === 'admin' ? 'bg-primary/10 text-primary' : 'bg-white/[0.06] text-text-muted'
                         }`}
                       >
                         {u.role === 'admin' ? 'Remove Admin' : 'Make Admin'}
@@ -281,7 +281,7 @@ export default function AdminUsersPage() {
                         onClick={() => toggleActive(u)}
                         disabled={updating === u._id}
                         className={`flex-1 py-2 rounded-xl text-xs font-bold transition-colors ${
-                          u.isActive !== false ? 'bg-red-50 text-red-400' : 'bg-success/10 text-success'
+                          u.isActive !== false ? 'bg-error/10 text-error' : 'bg-success/10 text-success'
                         }`}
                       >
                         {u.isActive !== false ? 'Deactivate' : 'Activate'}
@@ -298,21 +298,21 @@ export default function AdminUsersPage() {
       {/* Credit/Debit Modal */}
       {creditModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setCreditModal(null)}>
-          <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between p-5 border-b border-secondary/[0.06]">
+          <div className="bg-card rounded-2xl w-full max-w-sm shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-5 border-b border-white/[0.04]">
               <div>
-                <h3 className="font-bold text-secondary">Adjust Wallet</h3>
-                <p className="text-xs text-secondary/40 mt-0.5">{creditModal.name} - {creditModal.email}</p>
+                <h3 className="font-bold text-white">Adjust Wallet</h3>
+                <p className="text-xs text-text-muted mt-0.5">{creditModal.name} - {creditModal.email}</p>
               </div>
-              <button onClick={() => setCreditModal(null)} className="p-1 rounded-lg hover:bg-secondary/[0.06]">
-                <X className="w-4 h-4 text-secondary/40" />
+              <button onClick={() => setCreditModal(null)} className="p-1 rounded-lg hover:bg-white/[0.06]">
+                <X className="w-4 h-4 text-text-muted" />
               </button>
             </div>
 
             <div className="p-5 space-y-4">
               <div className="text-center">
-                <p className="text-xs text-secondary/40">Current Balance</p>
-                <p className="text-2xl font-extrabold text-secondary">{formatCurrency(creditModal.walletBalance || 0)}</p>
+                <p className="text-xs text-text-muted">Current Balance</p>
+                <p className="text-2xl font-extrabold text-white">{formatCurrency(creditModal.walletBalance || 0)}</p>
               </div>
 
               <div className="flex gap-2">
@@ -321,7 +321,7 @@ export default function AdminUsersPage() {
                   className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors ${
                     creditType === 'credit'
                       ? 'bg-success text-white'
-                      : 'bg-secondary/[0.06] text-secondary/50'
+                      : 'bg-white/[0.06] text-text-muted'
                   }`}
                 >
                   + Credit
@@ -331,7 +331,7 @@ export default function AdminUsersPage() {
                   className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors ${
                     creditType === 'debit'
                       ? 'bg-red-500 text-white'
-                      : 'bg-secondary/[0.06] text-secondary/50'
+                      : 'bg-white/[0.06] text-text-muted'
                   }`}
                 >
                   - Debit
@@ -339,7 +339,7 @@ export default function AdminUsersPage() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-secondary/50 mb-1.5 block">
+                <label className="text-xs font-semibold text-text-muted mb-1.5 block">
                   Amount (GH\u20B5)
                 </label>
                 <input
@@ -349,24 +349,24 @@ export default function AdminUsersPage() {
                   value={creditAmount}
                   onChange={e => setCreditAmount(e.target.value)}
                   placeholder="0.00"
-                  className="w-full px-4 py-3 rounded-xl border border-secondary/[0.1] text-lg font-bold text-secondary focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                  className="w-full px-4 py-3 rounded-xl border border-white/10 text-lg font-bold text-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
                   autoFocus
                 />
               </div>
 
               {creditAmount && parseFloat(creditAmount) > 0 && (
-                <div className="bg-secondary/[0.03] rounded-xl p-3 text-sm">
-                  <div className="flex justify-between text-secondary/50">
+                <div className="bg-white/[0.03] rounded-xl p-3 text-sm">
+                  <div className="flex justify-between text-text-muted">
                     <span>Current</span>
                     <span>{formatCurrency(creditModal.walletBalance || 0)}</span>
                   </div>
-                  <div className="flex justify-between text-secondary/50 mt-1">
+                  <div className="flex justify-between text-text-muted mt-1">
                     <span>{creditType === 'credit' ? '+ Credit' : '- Debit'}</span>
                     <span className={creditType === 'credit' ? 'text-success' : 'text-red-500'}>
                       {creditType === 'credit' ? '+' : '-'}{formatCurrency(parseFloat(creditAmount))}
                     </span>
                   </div>
-                  <div className="flex justify-between font-bold text-secondary mt-2 pt-2 border-t border-secondary/[0.06]">
+                  <div className="flex justify-between font-bold text-white mt-2 pt-2 border-t border-white/[0.04]">
                     <span>New Balance</span>
                     <span>{formatCurrency(
                       creditType === 'credit'

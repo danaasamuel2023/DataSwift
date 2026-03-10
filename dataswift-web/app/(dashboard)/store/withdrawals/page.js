@@ -72,12 +72,12 @@ export default function StoreWithdrawalsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Withdrawals</h1>
-        <p className="text-secondary/40 text-sm mt-1">Withdraw your store earnings to MoMo.</p>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">Withdrawals</h1>
+        <p className="text-text-muted text-sm mt-1">Withdraw your store earnings to MoMo.</p>
       </div>
 
       {/* Balance */}
-      <Card className="bg-secondary !text-white">
+      <Card className="bg-card !text-white">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-white/40 text-xs">Available to withdraw</p>
@@ -92,7 +92,7 @@ export default function StoreWithdrawalsPage() {
 
       {/* Request withdrawal */}
       <Card>
-        <h2 className="font-bold text-secondary mb-4">Request Withdrawal</h2>
+        <h2 className="font-bold text-white mb-4">Request Withdrawal</h2>
         <div className="space-y-4">
           <Input
             label="Amount (GH₵)"
@@ -102,8 +102,8 @@ export default function StoreWithdrawalsPage() {
             onChange={(e) => setAmount(e.target.value)}
           />
           {store?.momoDetails?.number && (
-            <p className="text-xs text-secondary/40">
-              Sending to: <span className="font-semibold text-secondary/60">{store.momoDetails.name} ({store.momoDetails.number})</span>
+            <p className="text-xs text-text-muted">
+              Sending to: <span className="font-semibold text-text-muted">{store.momoDetails.name} ({store.momoDetails.number})</span>
             </p>
           )}
           <Button fullWidth loading={requesting} onClick={handleRequest}>
@@ -114,12 +114,12 @@ export default function StoreWithdrawalsPage() {
 
       {/* History */}
       <div>
-        <h2 className="font-bold text-secondary mb-3">Withdrawal History</h2>
+        <h2 className="font-bold text-white mb-3">Withdrawal History</h2>
         {withdrawals.length === 0 ? (
           <Card>
             <div className="text-center py-8">
-              <Wallet className="w-10 h-10 text-secondary/10 mx-auto mb-2" />
-              <p className="text-secondary/40 text-sm">No withdrawals yet.</p>
+              <Wallet className="w-10 h-10 text-white/10 mx-auto mb-2" />
+              <p className="text-text-muted text-sm">No withdrawals yet.</p>
             </div>
           </Card>
         ) : (
@@ -128,8 +128,8 @@ export default function StoreWithdrawalsPage() {
               <Card key={w._id} className="!p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-bold text-sm text-secondary">{formatCurrency(w.amount)}</p>
-                    <p className="text-xs text-secondary/40 mt-0.5">{formatDate(w.createdAt)} &middot; {w.reference}</p>
+                    <p className="font-bold text-sm text-white">{formatCurrency(w.amount)}</p>
+                    <p className="text-xs text-text-muted mt-0.5">{formatDate(w.createdAt)} &middot; {w.reference}</p>
                   </div>
                   <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
                     STATUS_COLORS[w.status] || STATUS_COLORS.pending

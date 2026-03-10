@@ -36,8 +36,8 @@ function PaymentCallbackContent() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-10 h-10 text-primary animate-spin mx-auto mb-4" />
-          <h1 className="text-xl font-bold text-secondary">Verifying payment...</h1>
-          <p className="text-secondary/40 text-sm mt-2">Please wait while we confirm your deposit.</p>
+          <h1 className="text-xl font-bold text-white">Verifying payment...</h1>
+          <p className="text-text-muted text-sm mt-2">Please wait while we confirm your deposit.</p>
         </div>
       </div>
     );
@@ -50,8 +50,8 @@ function PaymentCallbackContent() {
           <div className="w-16 h-16 bg-success/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Check className="w-8 h-8 text-success" />
           </div>
-          <h1 className="text-xl font-bold text-secondary">Payment Successful!</h1>
-          <p className="text-secondary/40 text-sm mt-2 mb-6">Your wallet has been credited.</p>
+          <h1 className="text-xl font-bold text-white">Payment Successful!</h1>
+          <p className="text-text-muted text-sm mt-2 mb-6">Your wallet has been credited.</p>
           <Button onClick={() => router.push('/wallet')}>Go to Wallet</Button>
         </div>
       </div>
@@ -64,8 +64,8 @@ function PaymentCallbackContent() {
         <div className="w-16 h-16 bg-error/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <X className="w-8 h-8 text-error" />
         </div>
-        <h1 className="text-xl font-bold text-secondary">Payment Failed</h1>
-        <p className="text-secondary/40 text-sm mt-2 mb-6">We couldn&apos;t verify your payment. If you were charged, please contact support.</p>
+        <h1 className="text-xl font-bold text-white">Payment Failed</h1>
+        <p className="text-text-muted text-sm mt-2 mb-6">We couldn&apos;t verify your payment. If you were charged, please contact support.</p>
         <Button onClick={() => router.push('/wallet')}>Back to Wallet</Button>
       </div>
     </div>

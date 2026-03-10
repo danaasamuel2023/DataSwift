@@ -116,8 +116,8 @@ export default function BuyDataPage() {
         <div className="w-16 h-16 bg-success/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <Check className="w-8 h-8 text-success" />
         </div>
-        <h2 className="text-xl font-extrabold text-secondary">Purchase Successful!</h2>
-        <p className="text-secondary/40 text-sm mt-2 mb-6">
+        <h2 className="text-xl font-extrabold text-white">Purchase Successful!</h2>
+        <p className="text-text-muted text-sm mt-2 mb-6">
           {selectedBundle?.capacity}GB {NETWORK_LIST.find(n => n.id === selectedNetwork)?.label} data sent to {phoneNumber}
         </p>
         <div className="flex gap-3 justify-center">
@@ -131,12 +131,12 @@ export default function BuyDataPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Buy Data</h1>
-        <p className="text-secondary/40 text-sm mt-1">Choose a network and bundle to get started.</p>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">Buy Data</h1>
+        <p className="text-text-muted text-sm mt-1">Choose a network and bundle to get started.</p>
       </div>
 
       {/* Balance reminder */}
-      <Card className="bg-secondary !text-white">
+      <Card className="bg-card !text-white">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-white/40 text-xs">Your balance</p>
@@ -148,7 +148,7 @@ export default function BuyDataPage() {
 
       {/* Step 1: Network selection */}
       <div>
-        <h2 className="font-bold text-sm text-secondary/60 mb-3">
+        <h2 className="font-bold text-sm text-text-muted mb-3">
           {step === 'network' ? '1. Select network' : 'Network'}
         </h2>
         <div className="grid grid-cols-3 gap-3">
@@ -159,13 +159,13 @@ export default function BuyDataPage() {
               className={`p-4 rounded-2xl border-2 transition-all text-center ${
                 selectedNetwork === net.id
                   ? 'border-primary bg-primary/5 shadow-md shadow-primary/10'
-                  : 'border-secondary/[0.06] hover:border-secondary/20'
+                  : 'border-white/[0.04] hover:border-white/10'
               }`}
             >
               <div className="flex justify-center mb-2">
                 <NetworkIcon network={net.id} size={40} />
               </div>
-              <p className={`font-bold text-sm ${selectedNetwork === net.id ? 'text-primary' : 'text-secondary'}`}>
+              <p className={`font-bold text-sm ${selectedNetwork === net.id ? 'text-primary' : 'text-text'}`}>
                 {net.label}
               </p>
             </button>
@@ -176,7 +176,7 @@ export default function BuyDataPage() {
       {/* Step 2: Bundle selection */}
       {step !== 'network' && (
         <div>
-          <h2 className="font-bold text-sm text-secondary/60 mb-3">2. Choose a bundle</h2>
+          <h2 className="font-bold text-sm text-text-muted mb-3">2. Choose a bundle</h2>
           {loadingPackages ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="w-6 h-6 text-primary animate-spin" />
@@ -184,8 +184,8 @@ export default function BuyDataPage() {
           ) : packages.length === 0 ? (
             <Card>
               <div className="text-center py-4">
-                <AlertCircle className="w-8 h-8 text-secondary/20 mx-auto mb-2" />
-                <p className="text-secondary/40 text-sm">No packages available for this network right now.</p>
+                <AlertCircle className="w-8 h-8 text-white/20 mx-auto mb-2" />
+                <p className="text-text-muted text-sm">No packages available for this network right now.</p>
               </div>
             </Card>
           ) : (
@@ -197,13 +197,13 @@ export default function BuyDataPage() {
                   className={`p-4 rounded-2xl border-2 transition-all text-left ${
                     selectedBundle?.capacity === pkg.capacity
                       ? 'border-primary bg-primary/5 shadow-md shadow-primary/10'
-                      : 'border-secondary/[0.06] hover:border-secondary/20'
+                      : 'border-white/[0.04] hover:border-white/10'
                   }`}
                 >
-                  <p className="text-lg font-extrabold text-secondary">{pkg.capacity}GB</p>
+                  <p className="text-lg font-extrabold text-white">{pkg.capacity}GB</p>
                   <p className="text-primary font-bold text-sm mt-1">{formatCurrency(pkg.price)}</p>
                   {pkg.validity && (
-                    <p className="text-xs text-secondary/40 mt-1">{pkg.validity}</p>
+                    <p className="text-xs text-text-muted mt-1">{pkg.validity}</p>
                   )}
                 </button>
               ))}
@@ -215,7 +215,7 @@ export default function BuyDataPage() {
       {/* Step 3: Confirm */}
       {step === 'confirm' && selectedBundle && (
         <div>
-          <h2 className="font-bold text-sm text-secondary/60 mb-3">3. Enter details & pay</h2>
+          <h2 className="font-bold text-sm text-text-muted mb-3">3. Enter details & pay</h2>
           <Card>
             <div className="space-y-4">
               <Input
@@ -229,20 +229,20 @@ export default function BuyDataPage() {
 
               {/* Payment method toggle */}
               <div>
-                <label className="text-sm font-semibold text-secondary/60 block mb-2">Payment method</label>
+                <label className="text-sm font-semibold text-text-muted block mb-2">Payment method</label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => setPaymentMethod('wallet')}
                     className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
                       paymentMethod === 'wallet'
                         ? 'border-primary bg-primary/5'
-                        : 'border-secondary/[0.06] hover:border-secondary/20'
+                        : 'border-white/[0.04] hover:border-white/10'
                     }`}
                   >
-                    <Wallet className={`w-5 h-5 ${paymentMethod === 'wallet' ? 'text-primary' : 'text-secondary/40'}`} />
+                    <Wallet className={`w-5 h-5 ${paymentMethod === 'wallet' ? 'text-primary' : 'text-text-muted'}`} />
                     <div className="text-left">
-                      <p className={`text-sm font-bold ${paymentMethod === 'wallet' ? 'text-primary' : 'text-secondary'}`}>Wallet</p>
-                      <p className="text-xs text-secondary/40">{formatCurrency(user?.walletBalance || 0)}</p>
+                      <p className={`text-sm font-bold ${paymentMethod === 'wallet' ? 'text-primary' : 'text-text'}`}>Wallet</p>
+                      <p className="text-xs text-text-muted">{formatCurrency(user?.walletBalance || 0)}</p>
                     </div>
                   </button>
                   <button
@@ -250,13 +250,13 @@ export default function BuyDataPage() {
                     className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
                       paymentMethod === 'momo'
                         ? 'border-primary bg-primary/5'
-                        : 'border-secondary/[0.06] hover:border-secondary/20'
+                        : 'border-white/[0.04] hover:border-white/10'
                     }`}
                   >
-                    <Smartphone className={`w-5 h-5 ${paymentMethod === 'momo' ? 'text-primary' : 'text-secondary/40'}`} />
+                    <Smartphone className={`w-5 h-5 ${paymentMethod === 'momo' ? 'text-primary' : 'text-text-muted'}`} />
                     <div className="text-left">
-                      <p className={`text-sm font-bold ${paymentMethod === 'momo' ? 'text-primary' : 'text-secondary'}`}>MoMo</p>
-                      <p className="text-xs text-secondary/40">Pay directly</p>
+                      <p className={`text-sm font-bold ${paymentMethod === 'momo' ? 'text-primary' : 'text-text'}`}>MoMo</p>
+                      <p className="text-xs text-text-muted">Pay directly</p>
                     </div>
                   </button>
                 </div>
@@ -264,31 +264,31 @@ export default function BuyDataPage() {
 
               {/* Wallet insufficient balance warning */}
               {paymentMethod === 'wallet' && selectedBundle.price > (user?.walletBalance || 0) && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-3 flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
-                  <p className="text-xs text-red-600">
+                <div className="bg-error/10 border border-error/20 rounded-xl p-3 flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 text-error mt-0.5 shrink-0" />
+                  <p className="text-xs text-error">
                     Insufficient wallet balance. <button onClick={() => setPaymentMethod('momo')} className="font-bold underline">Pay with MoMo instead</button> or <a href="/wallet" className="font-bold underline">top up your wallet</a>.
                   </p>
                 </div>
               )}
 
-              <div className="bg-background rounded-xl p-4 space-y-2">
+              <div className="bg-surface-light rounded-xl p-4 space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-secondary/40">Network</span>
-                  <span className="font-semibold text-secondary">
+                  <span className="text-text-muted">Network</span>
+                  <span className="font-semibold text-text">
                     {NETWORK_LIST.find(n => n.id === selectedNetwork)?.label}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-secondary/40">Bundle</span>
-                  <span className="font-semibold text-secondary">{selectedBundle.capacity}GB</span>
+                  <span className="text-text-muted">Bundle</span>
+                  <span className="font-semibold text-text">{selectedBundle.capacity}GB</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-secondary/40">Payment</span>
-                  <span className="font-semibold text-secondary">{paymentMethod === 'wallet' ? 'Wallet' : 'Mobile Money'}</span>
+                  <span className="text-text-muted">Payment</span>
+                  <span className="font-semibold text-text">{paymentMethod === 'wallet' ? 'Wallet' : 'Mobile Money'}</span>
                 </div>
-                <div className="flex justify-between text-sm border-t border-secondary/[0.06] pt-2 mt-2">
-                  <span className="text-secondary/40">Total</span>
+                <div className="flex justify-between text-sm border-t border-white/[0.04] pt-2 mt-2">
+                  <span className="text-text-muted">Total</span>
                   <span className="font-extrabold text-primary">{formatCurrency(selectedBundle.price)}</span>
                 </div>
               </div>

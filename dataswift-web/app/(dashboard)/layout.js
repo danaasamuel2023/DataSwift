@@ -58,24 +58,22 @@ export default function DashboardLayout({ children }) {
   return (
     <div className="flex h-screen bg-background">
       {/* Sidebar - Desktop */}
-      <aside className={`
-        hidden md:flex flex-col w-64 bg-white border-r border-secondary/[0.06] flex-shrink-0
-      `}>
+      <aside className="hidden md:flex flex-col w-64 bg-surface border-r border-white/[0.04] flex-shrink-0">
         {/* Logo */}
-        <div className="p-5 border-b border-secondary/[0.06]">
+        <div className="p-5 border-b border-white/[0.04]">
           <Link href="/dashboard" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center shadow-sm shadow-primary/20">
               <Zap className="w-4.5 h-4.5 text-white fill-white" />
             </div>
             <span className="font-extrabold text-lg">
-              <span className="text-secondary">Data</span><span className="text-primary">Swift</span>
+              <span className="text-white">Swift</span><span className="text-primary">Bundle</span>
             </span>
           </Link>
         </div>
 
         {/* Balance card */}
-        <div className="mx-4 mt-4 p-4 bg-secondary rounded-xl">
-          <p className="text-white/40 text-xs font-medium">Wallet Balance</p>
+        <div className="mx-4 mt-4 p-4 bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl border border-primary/10">
+          <p className="text-text-muted text-xs font-medium">Wallet Balance</p>
           <p className="text-white text-xl font-extrabold mt-0.5">{formatCurrency(user.walletBalance)}</p>
           <Link href="/wallet" className="inline-flex items-center gap-1 text-primary text-xs font-semibold mt-2 hover:underline">
             Top up <ChevronRight className="w-3 h-3" />
@@ -95,7 +93,7 @@ export default function DashboardLayout({ children }) {
                   flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
                   ${active
                     ? 'bg-primary/10 text-primary'
-                    : 'text-secondary/50 hover:text-secondary hover:bg-secondary/[0.03]'
+                    : 'text-text-muted hover:text-text hover:bg-white/[0.03]'
                   }
                 `}
               >
@@ -107,10 +105,10 @@ export default function DashboardLayout({ children }) {
           })}
 
           {/* Store link */}
-          <div className="pt-3 mt-3 border-t border-secondary/[0.06]">
+          <div className="pt-3 mt-3 border-t border-white/[0.04]">
             <Link
               href="/store/dashboard"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-secondary/50 hover:text-primary hover:bg-primary/5 transition-all"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-text-muted hover:text-primary hover:bg-primary/5 transition-all"
             >
               <Store className="w-[18px] h-[18px]" />
               Agent Store
@@ -119,10 +117,10 @@ export default function DashboardLayout({ children }) {
         </nav>
 
         {/* Logout */}
-        <div className="p-3 border-t border-secondary/[0.06]">
+        <div className="p-3 border-t border-white/[0.04]">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-secondary/40 hover:text-error hover:bg-error/5 transition-all"
+            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-text-muted hover:text-error hover:bg-error/5 transition-all"
           >
             <LogOut className="w-[18px] h-[18px]" />
             Log out
@@ -131,12 +129,12 @@ export default function DashboardLayout({ children }) {
       </aside>
 
       {/* Mobile header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-white border-b border-secondary/[0.06] z-30 flex items-center justify-between px-4">
-        <button onClick={() => setSidebarOpen(true)} className="p-1.5 rounded-lg hover:bg-secondary/5">
-          <Menu className="w-5 h-5 text-secondary" />
+      <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-surface/95 backdrop-blur-xl border-b border-white/[0.04] z-30 flex items-center justify-between px-4">
+        <button onClick={() => setSidebarOpen(true)} className="p-1.5 rounded-lg hover:bg-white/5">
+          <Menu className="w-5 h-5 text-text" />
         </button>
         <span className="font-extrabold text-sm">
-          <span className="text-secondary">Data</span><span className="text-primary">Swift</span>
+          <span className="text-white">Swift</span><span className="text-primary">Bundle</span>
         </span>
         <Link href="/wallet" className="text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-lg">
           {formatCurrency(user.walletBalance)}
@@ -146,18 +144,18 @@ export default function DashboardLayout({ children }) {
       {/* Mobile sidebar overlay */}
       {sidebarOpen && isMobile && (
         <>
-          <div className="fixed inset-0 bg-black/40 z-40" onClick={() => setSidebarOpen(false)} />
-          <aside className="fixed left-0 top-0 bottom-0 w-72 bg-white z-50 flex flex-col shadow-2xl">
-            <div className="p-4 flex items-center justify-between border-b border-secondary/[0.06]">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={() => setSidebarOpen(false)} />
+          <aside className="fixed left-0 top-0 bottom-0 w-72 bg-surface z-50 flex flex-col shadow-2xl border-r border-white/[0.04]">
+            <div className="p-4 flex items-center justify-between border-b border-white/[0.04]">
               <Link href="/dashboard" className="flex items-center gap-2" onClick={() => setSidebarOpen(false)}>
                 <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center">
                   <Zap className="w-4.5 h-4.5 text-white fill-white" />
                 </div>
                 <span className="font-extrabold text-lg">
-                  <span className="text-secondary">Data</span><span className="text-primary">Swift</span>
+                  <span className="text-white">Swift</span><span className="text-primary">Bundle</span>
                 </span>
               </Link>
-              <button onClick={() => setSidebarOpen(false)} className="p-1.5"><X className="w-5 h-5" /></button>
+              <button onClick={() => setSidebarOpen(false)} className="p-1.5 text-text-muted"><X className="w-5 h-5" /></button>
             </div>
             <nav className="flex-1 px-3 mt-4 space-y-0.5 overflow-y-auto">
               {navItems.map(item => {
@@ -169,24 +167,24 @@ export default function DashboardLayout({ children }) {
                     href={item.href}
                     onClick={() => setSidebarOpen(false)}
                     className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all
-                      ${active ? 'bg-primary/10 text-primary' : 'text-secondary/50 hover:text-secondary'}`}
+                      ${active ? 'bg-primary/10 text-primary' : 'text-text-muted hover:text-text'}`}
                   >
                     <Icon className="w-5 h-5" /> {item.label}
                   </Link>
                 );
               })}
-              <div className="pt-3 mt-3 border-t border-secondary/[0.06]">
+              <div className="pt-3 mt-3 border-t border-white/[0.04]">
                 <Link
                   href="/store/dashboard"
                   onClick={() => setSidebarOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-secondary/50 hover:text-primary"
+                  className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-text-muted hover:text-primary"
                 >
                   <Store className="w-5 h-5" /> Agent Store
                 </Link>
               </div>
             </nav>
-            <div className="p-3 border-t border-secondary/[0.06]">
-              <button onClick={handleLogout} className="flex items-center gap-3 w-full px-3 py-3 rounded-xl text-sm text-error/60 hover:text-error hover:bg-error/5">
+            <div className="p-3 border-t border-white/[0.04]">
+              <button onClick={handleLogout} className="flex items-center gap-3 w-full px-3 py-3 rounded-xl text-sm text-text-muted hover:text-error hover:bg-error/5">
                 <LogOut className="w-5 h-5" /> Log out
               </button>
             </div>
@@ -206,7 +204,7 @@ export default function DashboardLayout({ children }) {
 
       {/* Mobile bottom nav */}
       {isMobile && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-secondary/[0.06] z-20">
+        <div className="fixed bottom-0 left-0 right-0 bg-surface/95 backdrop-blur-xl border-t border-white/[0.04] z-20">
           <div className="grid grid-cols-5 p-1.5">
             {bottomNavItems.map(item => {
               const Icon = item.icon;
@@ -216,7 +214,7 @@ export default function DashboardLayout({ children }) {
                   key={item.href}
                   href={item.href}
                   className={`flex flex-col items-center py-2 rounded-lg text-[10px] font-medium transition-colors
-                    ${active ? 'text-primary bg-primary/5' : 'text-secondary/40'}`}
+                    ${active ? 'text-primary bg-primary/5' : 'text-text-muted'}`}
                 >
                   <Icon className="w-4.5 h-4.5 mb-0.5" />
                   {item.label}

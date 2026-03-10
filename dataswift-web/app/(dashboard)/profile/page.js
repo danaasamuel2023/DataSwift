@@ -71,8 +71,8 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
-        <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Profile</h1>
-        <p className="text-secondary/40 text-sm mt-1">Manage your account details.</p>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">Profile</h1>
+        <p className="text-text-muted text-sm mt-1">Manage your account details.</p>
       </div>
 
       {/* Avatar */}
@@ -84,15 +84,15 @@ export default function ProfilePage() {
             </span>
           </div>
           <div>
-            <p className="font-bold text-lg text-secondary">{user?.name}</p>
-            <p className="text-sm text-secondary/40">{user?.email}</p>
+            <p className="font-bold text-lg text-white">{user?.name}</p>
+            <p className="text-sm text-text-muted">{user?.email}</p>
           </div>
         </div>
       </Card>
 
       {/* Personal info */}
       <Card>
-        <h2 className="font-bold text-secondary mb-4">Personal Information</h2>
+        <h2 className="font-bold text-white mb-4">Personal Information</h2>
         <div className="space-y-4">
           <Input
             label="Full name"
@@ -122,7 +122,7 @@ export default function ProfilePage() {
 
       {/* Change password */}
       <Card>
-        <h2 className="font-bold text-secondary mb-4">Change Password</h2>
+        <h2 className="font-bold text-white mb-4">Change Password</h2>
         <div className="space-y-4">
           <Input
             label="Current password"

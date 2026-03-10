@@ -150,8 +150,8 @@ export default function AdminPricingPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Pricing</h1>
-          <p className="text-secondary/40 text-sm mt-1">Set selling prices for data bundles.</p>
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">Pricing</h1>
+          <p className="text-text-muted text-sm mt-1">Set selling prices for data bundles.</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" loading={syncingGhust} onClick={handleSyncGhust}>
@@ -175,7 +175,7 @@ export default function AdminPricingPage() {
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
               selectedNetwork === net.id
                 ? 'bg-primary text-white shadow-md shadow-primary/20'
-                : 'bg-secondary/[0.04] text-secondary/50 hover:bg-secondary/[0.08]'
+                : 'bg-white/[0.04] text-text-muted hover:bg-white/[0.08]'
             }`}
           >
             <NetworkIcon network={net.id} size={20} />
@@ -189,12 +189,12 @@ export default function AdminPricingPage() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-secondary/[0.06]">
-                <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Bundle</th>
-                <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Cost Price</th>
-                <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Selling Price</th>
-                <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Margin</th>
-                <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3"></th>
+              <tr className="border-b border-white/[0.04]">
+                <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Bundle</th>
+                <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Cost Price</th>
+                <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Selling Price</th>
+                <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Margin</th>
+                <th className="text-left text-xs font-semibold text-text-muted px-5 py-3"></th>
               </tr>
             </thead>
             <tbody>
@@ -203,8 +203,8 @@ export default function AdminPricingPage() {
                 const selling = sellingPrices[capacity] || 0;
                 const margin = selling - cost;
                 return (
-                  <tr key={capacity} className="border-b border-secondary/[0.04] last:border-0">
-                    <td className="px-5 py-3 font-bold text-sm text-secondary">{capacity}GB</td>
+                  <tr key={capacity} className="border-b border-white/[0.04] last:border-0">
+                    <td className="px-5 py-3 font-bold text-sm text-white">{capacity}GB</td>
                     <td className="px-5 py-3">
                       <input
                         type="number"
@@ -223,7 +223,7 @@ export default function AdminPricingPage() {
                             },
                           }));
                         }}
-                        className="w-24 px-3 py-1.5 rounded-lg border border-secondary/10 text-sm font-semibold text-secondary/60 focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none"
+                        className="w-24 px-3 py-1.5 rounded-lg border border-white/10 text-sm font-semibold text-text-muted focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none"
                       />
                     </td>
                     <td className="px-5 py-3">
@@ -232,11 +232,11 @@ export default function AdminPricingPage() {
                         step="0.01"
                         value={selling || ''}
                         onChange={(e) => handlePriceChange(selectedNetwork, capacity, e.target.value)}
-                        className="w-24 px-3 py-1.5 rounded-lg border border-secondary/10 text-sm font-semibold text-secondary focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none"
+                        className="w-24 px-3 py-1.5 rounded-lg border border-white/10 text-sm font-semibold text-text focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none"
                       />
                     </td>
                     <td className="px-5 py-3">
-                      <span className={`text-sm font-bold ${margin > 0 ? 'text-success' : margin < 0 ? 'text-error' : 'text-secondary/30'}`}>
+                      <span className={`text-sm font-bold ${margin > 0 ? 'text-success' : margin < 0 ? 'text-error' : 'text-text-muted'}`}>
                         {margin > 0 ? '+' : ''}{formatCurrency(margin)}
                       </span>
                     </td>
@@ -250,7 +250,7 @@ export default function AdminPricingPage() {
               })}
               {Object.keys(basePrices).length === 0 && Object.keys(sellingPrices).length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-5 py-8 text-center text-secondary/40 text-sm">
+                  <td colSpan={5} className="px-5 py-8 text-center text-text-muted text-sm">
                     No prices found. Add bundles manually or sync from a provider.
                   </td>
                 </tr>
@@ -261,13 +261,13 @@ export default function AdminPricingPage() {
       </Card>
       {/* Add new bundle */}
       <Card>
-        <h3 className="font-bold text-secondary text-sm mb-3">
+        <h3 className="font-bold text-white text-sm mb-3">
           <Plus className="w-4 h-4 inline mr-1" />
           Add Bundle for {NETWORKS.find(n => n.id === selectedNetwork)?.label}
         </h3>
         <div className="flex items-end gap-3">
           <div>
-            <label className="text-xs font-semibold text-secondary/40 block mb-1">Capacity (GB)</label>
+            <label className="text-xs font-semibold text-text-muted block mb-1">Capacity (GB)</label>
             <input
               type="number"
               step="0.5"
@@ -275,11 +275,11 @@ export default function AdminPricingPage() {
               placeholder="e.g. 1"
               value={newCapacity}
               onChange={(e) => setNewCapacity(e.target.value)}
-              className="w-24 px-3 py-1.5 rounded-lg border border-secondary/10 text-sm font-semibold text-secondary focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none"
+              className="w-24 px-3 py-1.5 rounded-lg border border-white/10 text-sm font-semibold text-text focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none"
             />
           </div>
           <div>
-            <label className="text-xs font-semibold text-secondary/40 block mb-1">Cost Price (GH&#8373;)</label>
+            <label className="text-xs font-semibold text-text-muted block mb-1">Cost Price (GH&#8373;)</label>
             <input
               type="number"
               step="0.01"
@@ -287,11 +287,11 @@ export default function AdminPricingPage() {
               placeholder="0.00"
               value={newCostPrice}
               onChange={(e) => setNewCostPrice(e.target.value)}
-              className="w-28 px-3 py-1.5 rounded-lg border border-secondary/10 text-sm font-semibold text-secondary focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none"
+              className="w-28 px-3 py-1.5 rounded-lg border border-white/10 text-sm font-semibold text-text focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none"
             />
           </div>
           <div>
-            <label className="text-xs font-semibold text-secondary/40 block mb-1">Selling Price (GH&#8373;)</label>
+            <label className="text-xs font-semibold text-text-muted block mb-1">Selling Price (GH&#8373;)</label>
             <input
               type="number"
               step="0.01"
@@ -299,7 +299,7 @@ export default function AdminPricingPage() {
               placeholder="0.00"
               value={newSellingPrice}
               onChange={(e) => setNewSellingPrice(e.target.value)}
-              className="w-28 px-3 py-1.5 rounded-lg border border-secondary/10 text-sm font-semibold text-secondary focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none"
+              className="w-28 px-3 py-1.5 rounded-lg border border-white/10 text-sm font-semibold text-text focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none"
             />
           </div>
           <Button size="sm" onClick={handleAddBundle}>

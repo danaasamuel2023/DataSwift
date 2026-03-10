@@ -69,13 +69,13 @@ export default function AdminOverviewPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Admin Overview</h1>
-        <p className="text-secondary/40 text-sm mt-1">Platform stats at a glance.</p>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">Admin Overview</h1>
+        <p className="text-text-muted text-sm mt-1">Platform stats at a glance.</p>
       </div>
 
       {/* Today's stats */}
       <div>
-        <h2 className="font-bold text-sm text-secondary/50 uppercase tracking-wider mb-3">Today</h2>
+        <h2 className="font-bold text-sm text-text-muted uppercase tracking-wider mb-3">Today</h2>
         <div className="grid grid-cols-3 gap-4">
           {todayCards.map((card, i) => {
             const Icon = card.icon;
@@ -86,8 +86,8 @@ export default function AdminOverviewPage() {
                     <Icon className={`w-6 h-6 text-${card.color}`} />
                   </div>
                   <div>
-                    <p className="text-2xl font-extrabold text-secondary">{card.value}</p>
-                    <p className="text-xs text-secondary/40">{card.label}</p>
+                    <p className="text-2xl font-extrabold text-white">{card.value}</p>
+                    <p className="text-xs text-text-muted">{card.label}</p>
                   </div>
                 </div>
               </Card>
@@ -98,7 +98,7 @@ export default function AdminOverviewPage() {
 
       {/* All-time stats */}
       <div>
-        <h2 className="font-bold text-sm text-secondary/50 uppercase tracking-wider mb-3">All Time</h2>
+        <h2 className="font-bold text-sm text-text-muted uppercase tracking-wider mb-3">All Time</h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {allTimeCards.map((card, i) => {
             const Icon = card.icon;
@@ -109,8 +109,8 @@ export default function AdminOverviewPage() {
                     <Icon className={`w-6 h-6 text-${card.color}`} />
                   </div>
                   <div>
-                    <p className="text-2xl font-extrabold text-secondary">{card.value}</p>
-                    <p className="text-xs text-secondary/40">{card.label}</p>
+                    <p className="text-2xl font-extrabold text-white">{card.value}</p>
+                    <p className="text-xs text-text-muted">{card.label}</p>
                   </div>
                 </div>
               </Card>
@@ -123,7 +123,7 @@ export default function AdminOverviewPage() {
       {networks.length > 0 && (
         <Card>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-secondary">Price Comparison (Selling vs Cost)</h2>
+            <h2 className="font-bold text-white">Price Comparison (Selling vs Cost)</h2>
             <button
               onClick={fetchProviderPrices}
               disabled={fetchingPrices}
@@ -145,16 +145,16 @@ export default function AdminOverviewPage() {
 
               return (
                 <div key={net}>
-                  <h3 className="font-bold text-sm text-secondary mb-2">{NETWORK_LABELS[net] || net}</h3>
+                  <h3 className="font-bold text-sm text-white mb-2">{NETWORK_LABELS[net] || net}</h3>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="border-b border-secondary/[0.06]">
-                          <th className="text-left py-2 text-secondary/40 font-semibold text-xs">Capacity</th>
-                          <th className="text-right py-2 text-secondary/40 font-semibold text-xs">Base (Saved)</th>
-                          {providerPrices && <th className="text-right py-2 text-secondary/40 font-semibold text-xs">Live Provider</th>}
-                          <th className="text-right py-2 text-secondary/40 font-semibold text-xs">Your Selling</th>
-                          <th className="text-right py-2 text-secondary/40 font-semibold text-xs">Profit/Unit</th>
+                        <tr className="border-b border-white/[0.04]">
+                          <th className="text-left py-2 text-text-muted font-semibold text-xs">Capacity</th>
+                          <th className="text-right py-2 text-text-muted font-semibold text-xs">Base (Saved)</th>
+                          {providerPrices && <th className="text-right py-2 text-text-muted font-semibold text-xs">Live Provider</th>}
+                          <th className="text-right py-2 text-text-muted font-semibold text-xs">Your Selling</th>
+                          <th className="text-right py-2 text-text-muted font-semibold text-xs">Profit/Unit</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -165,25 +165,25 @@ export default function AdminOverviewPage() {
                           const profit = sellingPrice - (basePrice || 0);
 
                           return (
-                            <tr key={cap} className="border-b border-secondary/[0.03]">
-                              <td className="py-2 font-semibold text-secondary">{cap}GB</td>
-                              <td className="py-2 text-right text-secondary/60">
+                            <tr key={cap} className="border-b border-white/[0.04]">
+                              <td className="py-2 font-semibold text-white">{cap}GB</td>
+                              <td className="py-2 text-right text-text-muted">
                                 {basePrice ? formatCurrency(basePrice) : '—'}
                               </td>
                               {providerPrices && (
                                 <td className="py-2 text-right">
                                   {livePrice != null ? (
-                                    <span className={livePrice !== basePrice ? 'text-red-500 font-bold' : 'text-secondary/60'}>
+                                    <span className={livePrice !== basePrice ? 'text-red-500 font-bold' : 'text-text-muted'}>
                                       {formatCurrency(livePrice)}
                                       {livePrice !== basePrice && basePrice ? ' ⚠' : ''}
                                     </span>
                                   ) : '—'}
                                 </td>
                               )}
-                              <td className="py-2 text-right font-bold text-secondary">
+                              <td className="py-2 text-right font-bold text-white">
                                 {sellingPrice ? formatCurrency(sellingPrice) : '—'}
                               </td>
-                              <td className={`py-2 text-right font-bold ${profit > 0 ? 'text-success' : profit < 0 ? 'text-red-500' : 'text-secondary/30'}`}>
+                              <td className={`py-2 text-right font-bold ${profit > 0 ? 'text-success' : profit < 0 ? 'text-red-500' : 'text-text-muted'}`}>
                                 {sellingPrice && basePrice ? formatCurrency(profit) : '—'}
                               </td>
                             </tr>
@@ -202,20 +202,20 @@ export default function AdminOverviewPage() {
       {/* Recent activity */}
       {stats?.recentOrders?.length > 0 && (
         <Card>
-          <h2 className="font-bold text-secondary mb-4">Recent Orders</h2>
+          <h2 className="font-bold text-white mb-4">Recent Orders</h2>
           <div className="space-y-3">
             {stats.recentOrders.map((order, i) => (
-              <div key={i} className="flex items-center justify-between py-2 border-b border-secondary/[0.04] last:border-0">
+              <div key={i} className="flex items-center justify-between py-2 border-b border-white/[0.04] last:border-0">
                 <div>
-                  <p className="font-semibold text-sm text-secondary">{order.phoneNumber}</p>
-                  <p className="text-xs text-secondary/40">
+                  <p className="font-semibold text-sm text-white">{order.phoneNumber}</p>
+                  <p className="text-xs text-text-muted">
                     {order.network} &middot; {order.capacity}GB
                     {order.purchaseSource === 'guest' && <span className="ml-1 text-primary">(Guest)</span>}
                     {order.purchaseSource === 'store' && <span className="ml-1 text-accent">(Store)</span>}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-sm text-secondary">{formatCurrency(order.price)}</p>
+                  <p className="font-bold text-sm text-white">{formatCurrency(order.price)}</p>
                   <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
                     order.status === 'completed' ? 'bg-success/10 text-success' :
                     order.status === 'processing' ? 'bg-blue-500/10 text-blue-500' :

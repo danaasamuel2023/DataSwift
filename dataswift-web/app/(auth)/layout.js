@@ -20,8 +20,8 @@ export default function AuthLayout({ children }) {
       </div>
 
       {/* Decoration */}
-      <div className="fixed top-0 right-0 w-[400px] h-[400px] bg-primary/[0.03] rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-      <div className="fixed bottom-0 left-0 w-[300px] h-[300px] bg-accent/[0.04] rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+      <div className="fixed top-0 right-0 w-[400px] h-[400px] bg-primary/[0.06] rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+      <div className="fixed bottom-0 left-0 w-[300px] h-[300px] bg-accent/[0.04] rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2 pointer-events-none" />
     </div>
   );
 }

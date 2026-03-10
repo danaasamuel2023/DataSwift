@@ -105,8 +105,8 @@ export default function StoreProductsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Store Products</h1>
-          <p className="text-secondary/40 text-sm mt-1">Set custom selling prices for your store.</p>
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">Store Products</h1>
+          <p className="text-text-muted text-sm mt-1">Set custom selling prices for your store.</p>
         </div>
         <Button loading={saving} onClick={handleSave}>
           <Save className="w-4 h-4" /> Save
@@ -122,7 +122,7 @@ export default function StoreProductsPage() {
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
               selectedNetwork === net.id
                 ? 'bg-primary text-white shadow-md shadow-primary/20'
-                : 'bg-secondary/[0.04] text-secondary/50 hover:bg-secondary/[0.08]'
+                : 'bg-surface-light text-text-muted hover:bg-white/5'
             }`}
           >
             <NetworkIcon network={net.id} size={20} />
@@ -135,8 +135,8 @@ export default function StoreProductsPage() {
       {networkPackages.length === 0 ? (
         <Card>
           <div className="text-center py-8">
-            <AlertCircle className="w-8 h-8 text-secondary/20 mx-auto mb-2" />
-            <p className="text-secondary/40 text-sm">No packages available for this network.</p>
+            <AlertCircle className="w-8 h-8 text-white/20 mx-auto mb-2" />
+            <p className="text-text-muted text-sm">No packages available for this network.</p>
           </div>
         </Card>
       ) : (
@@ -144,11 +144,11 @@ export default function StoreProductsPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-secondary/[0.06]">
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Bundle</th>
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Base Price</th>
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Your Price</th>
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Profit</th>
+                <tr className="border-b border-white/[0.04]">
+                  <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Bundle</th>
+                  <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Base Price</th>
+                  <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Your Price</th>
+                  <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Profit</th>
                 </tr>
               </thead>
               <tbody>
@@ -156,13 +156,13 @@ export default function StoreProductsPage() {
                   const sellingPrice = getProductPrice(selectedNetwork, pkg.capacity);
                   const profit = sellingPrice ? sellingPrice - pkg.price : 0;
                   return (
-                    <tr key={i} className="border-b border-secondary/[0.04] last:border-0">
+                    <tr key={i} className="border-b border-white/[0.04] last:border-0">
                       <td className="px-5 py-3">
-                        <p className="font-bold text-sm text-secondary">{pkg.capacity}GB</p>
-                        {pkg.validity && <p className="text-xs text-secondary/40">{pkg.validity}</p>}
+                        <p className="font-bold text-sm text-white">{pkg.capacity}GB</p>
+                        {pkg.validity && <p className="text-xs text-text-muted">{pkg.validity}</p>}
                       </td>
                       <td className="px-5 py-3">
-                        <p className="text-sm text-secondary/60">{formatCurrency(pkg.price)}</p>
+                        <p className="text-sm text-text-muted">{formatCurrency(pkg.price)}</p>
                       </td>
                       <td className="px-5 py-3">
                         <input
@@ -171,11 +171,11 @@ export default function StoreProductsPage() {
                           placeholder="0.00"
                           value={sellingPrice}
                           onChange={(e) => handlePriceChange(selectedNetwork, pkg.capacity, pkg.price, e.target.value)}
-                          className="w-24 px-3 py-1.5 rounded-lg border border-secondary/10 text-sm font-semibold text-secondary focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none"
+                          className="w-24 px-3 py-1.5 rounded-lg border border-white/10 bg-surface-light text-sm font-semibold text-white focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none"
                         />
                       </td>
                       <td className="px-5 py-3">
-                        <p className={`text-sm font-bold ${profit > 0 ? 'text-success' : profit < 0 ? 'text-error' : 'text-secondary/30'}`}>
+                        <p className={`text-sm font-bold ${profit > 0 ? 'text-success' : profit < 0 ? 'text-error' : 'text-text-muted'}`}>
                           {profit > 0 ? '+' : ''}{formatCurrency(profit)}
                         </p>
                       </td>

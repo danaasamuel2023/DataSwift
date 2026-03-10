@@ -50,7 +50,7 @@ function SignUpForm() {
       const res = await api.post('/auth/register', form);
       const { token, user } = res.data.data;
       login(token, user);
-      toast.success('Welcome to DataSwift!');
+      toast.success('Welcome to SwiftBundle!');
       router.push('/dashboard');
     } catch (err) {
       if (!err.response) {
@@ -74,9 +74,9 @@ function SignUpForm() {
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Create your account</h1>
-      <p className="text-secondary/40 text-sm mt-1.5 mb-8">Start buying data in under a minute.</p>
+    <div className="glass-card rounded-2xl p-6 sm:p-8">
+      <h1 className="text-2xl font-extrabold text-white tracking-tight">Create your account</h1>
+      <p className="text-text-muted text-sm mt-1.5 mb-8">Start buying data in under a minute.</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
@@ -133,7 +133,7 @@ function SignUpForm() {
         </Button>
       </form>
 
-      <p className="text-center text-sm text-secondary/40 mt-6">
+      <p className="text-center text-sm text-text-muted mt-6">
         Already have an account?{' '}
         <Link href="/sign-in" className="text-primary font-semibold hover:underline">Log in</Link>
       </p>

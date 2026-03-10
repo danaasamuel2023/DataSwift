@@ -105,7 +105,7 @@ export default function PublicStorePage({ params }) {
             </span>
           </div>
           <span className="text-xs font-medium" style={{ color: 'rgba(26,26,46,0.4)' }}>
-            Powered by DataSwift
+            Powered by SwiftBundle
           </span>
         </div>
       </div>
@@ -226,7 +226,7 @@ export default function PublicStorePage({ params }) {
       {/* Footer */}
       <div className="text-center py-8">
         <p className="text-xs" style={{ color: 'rgba(26,26,46,0.3)' }}>
-          Powered by <span className="font-bold">DataSwift</span>
+          Powered by <span className="font-bold">SwiftBundle</span>
         </p>
       </div>
     </div>

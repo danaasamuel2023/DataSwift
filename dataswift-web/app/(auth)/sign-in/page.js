@@ -48,9 +48,9 @@ export default function SignInPage() {
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Welcome back</h1>
-      <p className="text-secondary/40 text-sm mt-1.5 mb-8">Log in to buy data or manage your store.</p>
+    <div className="glass-card rounded-2xl p-6 sm:p-8">
+      <h1 className="text-2xl font-extrabold text-white tracking-tight">Welcome back</h1>
+      <p className="text-text-muted text-sm mt-1.5 mb-8">Log in to buy data or manage your store.</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
@@ -87,7 +87,7 @@ export default function SignInPage() {
         </Button>
       </form>
 
-      <p className="text-center text-sm text-secondary/40 mt-6">
+      <p className="text-center text-sm text-text-muted mt-6">
         Don&apos;t have an account?{' '}
         <Link href="/sign-up" className="text-primary font-semibold hover:underline">Sign up</Link>
       </p>

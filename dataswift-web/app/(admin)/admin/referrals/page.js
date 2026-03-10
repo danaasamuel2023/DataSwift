@@ -80,8 +80,8 @@ export default function AdminReferralsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Referral Program</h1>
-          <p className="text-secondary/40 text-sm mt-1">Configure referral rewards.</p>
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">Referral Program</h1>
+          <p className="text-text-muted text-sm mt-1">Configure referral rewards.</p>
         </div>
         <Button loading={saving} onClick={handleSave}>
           <Save className="w-4 h-4" /> Save
@@ -91,7 +91,7 @@ export default function AdminReferralsPage() {
       <Card>
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-secondary/60 mb-2">Referral Program</label>
+            <label className="block text-xs font-semibold text-text-muted mb-2">Referral Program</label>
             <button
               onClick={() => setForm(prev => ({ ...prev, enabled: !prev.enabled }))}
               className="flex items-center gap-2 text-sm font-semibold"
@@ -103,8 +103,8 @@ export default function AdminReferralsPage() {
                 </>
               ) : (
                 <>
-                  <ToggleLeft className="w-8 h-8 text-secondary/30" />
-                  <span className="text-secondary/40">Disabled</span>
+                  <ToggleLeft className="w-8 h-8 text-text-muted" />
+                  <span className="text-text-muted">Disabled</span>
                 </>
               )}
             </button>
@@ -119,11 +119,11 @@ export default function AdminReferralsPage() {
           />
 
           <div>
-            <label className="block text-xs font-semibold text-secondary/60 mb-1.5">
+            <label className="block text-xs font-semibold text-text-muted mb-1.5">
               Bonus Data Milestones (JSON)
             </label>
             <textarea
-              className="w-full px-4 py-3 rounded-xl border border-secondary/10 text-sm font-medium text-secondary focus:border-primary focus:ring-2 focus:ring-primary/10 outline-none resize-none bg-background"
+              className="w-full px-4 py-3 rounded-xl border border-white/10 text-sm font-medium text-text focus:border-primary focus:ring-2 focus:ring-primary/10 outline-none resize-none bg-surface-light"
               rows={4}
               placeholder='[{"referralCount": 5, "bonusGB": 1}, {"referralCount": 10, "bonusGB": 3}]'
               value={form.bonusDataMilestones}
@@ -136,32 +136,32 @@ export default function AdminReferralsPage() {
       {/* Referral list */}
       {referrals.length > 0 && (
         <Card className="!p-0 overflow-hidden">
-          <div className="px-5 py-3 border-b border-secondary/[0.06]">
-            <h2 className="font-bold text-secondary">Recent Referrals</h2>
+          <div className="px-5 py-3 border-b border-white/[0.04]">
+            <h2 className="font-bold text-white">Recent Referrals</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-secondary/[0.06]">
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Referrer</th>
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Referred</th>
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Status</th>
-                  <th className="text-left text-xs font-semibold text-secondary/40 px-5 py-3">Earnings</th>
+                <tr className="border-b border-white/[0.04]">
+                  <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Referrer</th>
+                  <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Referred</th>
+                  <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Status</th>
+                  <th className="text-left text-xs font-semibold text-text-muted px-5 py-3">Earnings</th>
                 </tr>
               </thead>
               <tbody>
                 {referrals.map(r => (
-                  <tr key={r._id} className="border-b border-secondary/[0.04] last:border-0">
-                    <td className="px-5 py-3 font-semibold text-sm text-secondary">{r.referrerId?.name || '—'}</td>
-                    <td className="px-5 py-3 text-sm text-secondary/60">{r.referredUserId?.name || '—'}</td>
+                  <tr key={r._id} className="border-b border-white/[0.04] last:border-0">
+                    <td className="px-5 py-3 font-semibold text-sm text-white">{r.referrerId?.name || '—'}</td>
+                    <td className="px-5 py-3 text-sm text-text-muted">{r.referredUserId?.name || '—'}</td>
                     <td className="px-5 py-3">
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                        r.status === 'active' ? 'bg-success/10 text-success' : 'bg-secondary/[0.06] text-secondary/40'
+                        r.status === 'active' ? 'bg-success/10 text-success' : 'bg-white/[0.06] text-text-muted'
                       }`}>
                         {r.status}
                       </span>
                     </td>
-                    <td className="px-5 py-3 font-bold text-sm text-secondary">{formatCurrency(r.totalEarnings || 0)}</td>
+                    <td className="px-5 py-3 font-bold text-sm text-white">{formatCurrency(r.totalEarnings || 0)}</td>
                   </tr>
                 ))}
               </tbody>

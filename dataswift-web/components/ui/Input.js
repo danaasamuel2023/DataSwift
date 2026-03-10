@@ -10,27 +10,27 @@ export default function Input({
   return (
     <div className="space-y-1.5">
       {label && (
-        <label className="block text-sm font-medium text-secondary/70">
+        <label className="block text-sm font-medium text-text-muted">
           {label}
         </label>
       )}
       <div className="relative">
         {Icon && (
-          <Icon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-secondary/30 pointer-events-none" />
+          <Icon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-text-muted/50 pointer-events-none" />
         )}
         <input
           className={`
             w-full
             ${Icon ? 'pl-11' : 'pl-4'} pr-4 py-3
-            bg-white
-            border-2 border-secondary/10
+            bg-surface-light
+            border border-card-border
             rounded-xl
-            text-secondary text-sm
-            placeholder:text-secondary/30
+            text-text text-sm
+            placeholder:text-text-muted/40
             transition-all duration-200
-            hover:border-secondary/20
+            hover:border-white/10
             focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10
-            disabled:bg-background-alt disabled:cursor-not-allowed
+            disabled:bg-surface disabled:opacity-50 disabled:cursor-not-allowed
             ${error ? 'border-error focus:border-error focus:ring-error/10' : ''}
             ${className}
           `}

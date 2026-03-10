@@ -99,8 +99,8 @@ export default function AdminSettingsPage() {
     <div className="max-w-3xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Settings</h1>
-          <p className="text-secondary/40 text-sm mt-1">Configure platform integrations.</p>
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">Settings</h1>
+          <p className="text-text-muted text-sm mt-1">Configure platform integrations.</p>
         </div>
         <Button loading={saving} onClick={handleSave}>
           <Save className="w-4 h-4" /> Save All
@@ -115,8 +115,8 @@ export default function AdminSettingsPage() {
               <Zap className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h2 className="font-bold text-secondary">DataMart API</h2>
-              <p className="text-xs text-secondary/40">Data fulfillment provider</p>
+              <h2 className="font-bold text-white">DataMart API</h2>
+              <p className="text-xs text-text-muted">Data fulfillment provider</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -160,8 +160,8 @@ export default function AdminSettingsPage() {
             <CreditCard className="w-5 h-5 text-blue-500" />
           </div>
           <div>
-            <h2 className="font-bold text-secondary">Paystack</h2>
-            <p className="text-xs text-secondary/40">Payment gateway for MoMo and card payments</p>
+            <h2 className="font-bold text-white">Paystack</h2>
+            <p className="text-xs text-text-muted">Payment gateway for MoMo and card payments</p>
           </div>
         </div>
         <div className="space-y-4">
@@ -190,8 +190,8 @@ export default function AdminSettingsPage() {
             <Settings className="w-5 h-5 text-success" />
           </div>
           <div>
-            <h2 className="font-bold text-secondary">SMS (mNotify)</h2>
-            <p className="text-xs text-secondary/40">For OTP and notifications</p>
+            <h2 className="font-bold text-white">SMS (mNotify)</h2>
+            <p className="text-xs text-text-muted">For OTP and notifications</p>
           </div>
         </div>
         <div className="space-y-4">
@@ -205,7 +205,7 @@ export default function AdminSettingsPage() {
           />
           <Input
             label="Sender ID"
-            placeholder="DataSwift"
+            placeholder="SwiftBundle"
             value={form.smsSenderId}
             onChange={(e) => setForm(prev => ({ ...prev, smsSenderId: e.target.value }))}
           />
@@ -214,7 +214,7 @@ export default function AdminSettingsPage() {
 
       {/* Withdrawal settings */}
       <Card>
-        <h2 className="font-bold text-secondary mb-4">Withdrawal Settings</h2>
+        <h2 className="font-bold text-white mb-4">Withdrawal Settings</h2>
         <div className="grid grid-cols-2 gap-4">
           <Input
             label="Minimum amount (GH₵)"

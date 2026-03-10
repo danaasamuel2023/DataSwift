@@ -43,8 +43,8 @@ export default function ReferralsPage() {
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: 'Join DataSwift',
-        text: `Sign up on DataSwift with my referral code ${user?.referralCode} and get the cheapest data bundles!`,
+        title: 'Join SwiftBundle',
+        text: `Sign up on SwiftBundle with my referral code ${user?.referralCode} and get the cheapest data bundles!`,
         url: referralLink,
       });
     } else {
@@ -63,8 +63,8 @@ export default function ReferralsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Referrals</h1>
-        <p className="text-secondary/40 text-sm mt-1">Invite friends and earn on every purchase they make.</p>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">Referrals</h1>
+        <p className="text-text-muted text-sm mt-1">Invite friends and earn on every purchase they make.</p>
       </div>
 
       {/* Referral code card */}
@@ -93,8 +93,8 @@ export default function ReferralsPage() {
             <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-2">
               <Users className="w-5 h-5 text-primary" />
             </div>
-            <p className="text-xl font-extrabold text-secondary">{dashboard?.totalReferred || 0}</p>
-            <p className="text-xs text-secondary/40 mt-0.5">Friends joined</p>
+            <p className="text-xl font-extrabold text-white">{dashboard?.totalReferred || 0}</p>
+            <p className="text-xs text-text-muted mt-0.5">Friends joined</p>
           </div>
         </Card>
         <Card>
@@ -102,8 +102,8 @@ export default function ReferralsPage() {
             <div className="w-10 h-10 bg-success/10 rounded-xl flex items-center justify-center mx-auto mb-2">
               <TrendingUp className="w-5 h-5 text-success" />
             </div>
-            <p className="text-xl font-extrabold text-secondary">{formatCurrency(dashboard?.totalEarnings || 0)}</p>
-            <p className="text-xs text-secondary/40 mt-0.5">Total earned</p>
+            <p className="text-xl font-extrabold text-white">{formatCurrency(dashboard?.totalEarnings || 0)}</p>
+            <p className="text-xs text-text-muted mt-0.5">Total earned</p>
           </div>
         </Card>
         <Card>
@@ -111,15 +111,15 @@ export default function ReferralsPage() {
             <div className="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center mx-auto mb-2">
               <Gift className="w-5 h-5 text-accent" />
             </div>
-            <p className="text-xl font-extrabold text-secondary">{dashboard?.bonusDataEarned || '0GB'}</p>
-            <p className="text-xs text-secondary/40 mt-0.5">Bonus data</p>
+            <p className="text-xl font-extrabold text-white">{dashboard?.bonusDataEarned || '0GB'}</p>
+            <p className="text-xs text-text-muted mt-0.5">Bonus data</p>
           </div>
         </Card>
       </div>
 
       {/* How it works */}
       <Card>
-        <h2 className="font-bold text-secondary mb-4">How it works</h2>
+        <h2 className="font-bold text-white mb-4">How it works</h2>
         <div className="space-y-4">
           {[
             { step: '1', title: 'Share your code', desc: 'Send your referral link to friends and family.' },
@@ -131,8 +131,8 @@ export default function ReferralsPage() {
                 <span className="text-primary font-extrabold text-sm">{item.step}</span>
               </div>
               <div>
-                <p className="font-semibold text-sm text-secondary">{item.title}</p>
-                <p className="text-xs text-secondary/40 mt-0.5">{item.desc}</p>
+                <p className="font-semibold text-sm text-text">{item.title}</p>
+                <p className="text-xs text-text-muted mt-0.5">{item.desc}</p>
               </div>
             </div>
           ))}
@@ -142,16 +142,16 @@ export default function ReferralsPage() {
       {/* Referred users */}
       {dashboard?.referredUsers?.length > 0 && (
         <Card>
-          <h2 className="font-bold text-secondary mb-4">Your referrals</h2>
+          <h2 className="font-bold text-white mb-4">Your referrals</h2>
           <div className="space-y-3">
             {dashboard.referredUsers.map((ref, i) => (
-              <div key={i} className="flex items-center justify-between py-2 border-b border-secondary/[0.06] last:border-0">
+              <div key={i} className="flex items-center justify-between py-2 border-b border-white/[0.04] last:border-0">
                 <div>
-                  <p className="font-semibold text-sm text-secondary">{ref.name}</p>
-                  <p className="text-xs text-secondary/40">Joined {ref.joinedAt}</p>
+                  <p className="font-semibold text-sm text-text">{ref.name}</p>
+                  <p className="text-xs text-text-muted">Joined {ref.joinedAt}</p>
                 </div>
                 <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                  ref.status === 'active' ? 'bg-success/10 text-success' : 'bg-secondary/[0.06] text-secondary/40'
+                  ref.status === 'active' ? 'bg-success/10 text-success' : 'bg-surface-light text-text-muted'
                 }`}>
                   {ref.status}
                 </span>

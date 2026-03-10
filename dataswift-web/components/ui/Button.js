@@ -3,11 +3,11 @@ import { Loader2 } from 'lucide-react';
 
 const variants = {
   primary: 'bg-primary hover:bg-primary-dark text-white shadow-lg shadow-primary/25 hover:shadow-primary/40',
-  secondary: 'bg-secondary hover:bg-secondary-light text-white',
-  outline: 'border-2 border-secondary/20 hover:border-primary text-secondary hover:text-primary bg-transparent',
-  ghost: 'text-secondary hover:bg-secondary/5 bg-transparent',
+  secondary: 'bg-surface-light hover:bg-surface text-text border border-card-border',
+  outline: 'border border-card-border hover:border-primary/50 text-text hover:text-primary bg-transparent',
+  ghost: 'text-text-muted hover:text-text hover:bg-white/5 bg-transparent',
   danger: 'bg-error hover:bg-red-600 text-white',
-  accent: 'bg-accent hover:bg-accent-light text-secondary font-bold'
+  accent: 'bg-accent hover:bg-accent-light text-black font-bold'
 };
 
 const sizes = {

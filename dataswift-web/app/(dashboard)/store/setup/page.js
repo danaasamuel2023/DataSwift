@@ -58,13 +58,13 @@ export default function StoreSetupPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Create your store</h1>
-        <p className="text-secondary/40 text-sm mt-1">Set up your data selling business in minutes.</p>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">Create your store</h1>
+        <p className="text-text-muted text-sm mt-1">Set up your data selling business in minutes.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card>
-          <h2 className="font-bold text-secondary mb-4">Store Details</h2>
+          <h2 className="font-bold text-white mb-4">Store Details</h2>
           <div className="space-y-4">
             <Input
               label="Store name"
@@ -92,8 +92,8 @@ export default function StoreSetupPage() {
         </Card>
 
         <Card>
-          <h2 className="font-bold text-secondary mb-4">Store Theme</h2>
-          <p className="text-secondary/40 text-xs mb-3">Pick a primary color for your store page.</p>
+          <h2 className="font-bold text-white mb-4">Store Theme</h2>
+          <p className="text-text-muted text-xs mb-3">Pick a primary color for your store page.</p>
           <div className="flex gap-3 flex-wrap">
             {THEME_COLORS.map(color => (
               <button
@@ -110,8 +110,8 @@ export default function StoreSetupPage() {
         </Card>
 
         <Card>
-          <h2 className="font-bold text-secondary mb-4">MoMo Withdrawal Details</h2>
-          <p className="text-secondary/40 text-xs mb-4">Where should we send your earnings?</p>
+          <h2 className="font-bold text-white mb-4">MoMo Withdrawal Details</h2>
+          <p className="text-text-muted text-xs mb-4">Where should we send your earnings?</p>
           <div className="space-y-4">
             <Input
               label="MoMo number"
@@ -122,7 +122,7 @@ export default function StoreSetupPage() {
               onChange={(e) => setForm(prev => ({ ...prev, momoNumber: e.target.value }))}
             />
             <div>
-              <label className="block text-xs font-semibold text-secondary/60 mb-1.5">Network</label>
+              <label className="block text-xs font-semibold text-text-muted mb-1.5">Network</label>
               <div className="flex gap-2">
                 {['MTN', 'Telecel', 'AirtelTigo'].map(net => (
                   <button
@@ -132,7 +132,7 @@ export default function StoreSetupPage() {
                     className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
                       form.momoNetwork === net
                         ? 'bg-primary text-white'
-                        : 'bg-secondary/[0.04] text-secondary/60 hover:bg-secondary/[0.08]'
+                        : 'bg-surface-light text-text-muted hover:bg-white/5'
                     }`}
                   >
                     {net}

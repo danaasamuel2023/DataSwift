@@ -57,8 +57,8 @@ export default function TransactionsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-secondary tracking-tight">Transactions</h1>
-        <p className="text-secondary/40 text-sm mt-1">Your complete purchase and payment history.</p>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">Transactions</h1>
+        <p className="text-text-muted text-sm mt-1">Your complete purchase and payment history.</p>
       </div>
 
       {/* Filters */}
@@ -79,7 +79,7 @@ export default function TransactionsPage() {
               className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                 filter === f
                   ? 'bg-primary text-white'
-                  : 'bg-secondary/[0.04] text-secondary/50 hover:bg-secondary/[0.08]'
+                  : 'bg-surface-light text-text-muted hover:bg-white/5'
               }`}
             >
               {f === 'all' ? 'All' : f === 'referral_earning' ? 'Referral' : f.charAt(0).toUpperCase() + f.slice(1)}
@@ -96,9 +96,9 @@ export default function TransactionsPage() {
       ) : filtered.length === 0 ? (
         <Card>
           <div className="text-center py-12">
-            <Clock className="w-12 h-12 text-secondary/10 mx-auto mb-3" />
-            <p className="font-bold text-secondary">No transactions yet</p>
-            <p className="text-secondary/40 text-sm mt-1">Your purchases and deposits will show up here.</p>
+            <Clock className="w-12 h-12 text-white/10 mx-auto mb-3" />
+            <p className="font-bold text-white">No transactions yet</p>
+            <p className="text-text-muted text-sm mt-1">Your purchases and deposits will show up here.</p>
           </div>
         </Card>
       ) : (
@@ -113,16 +113,16 @@ export default function TransactionsPage() {
                     <Icon className={`w-5 h-5 ${config.color}`} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-secondary truncate">
+                    <p className="font-semibold text-sm text-text truncate">
                       {tx.description || config.label}
                     </p>
-                    <p className="text-xs text-secondary/40 mt-0.5">
+                    <p className="text-xs text-text-muted mt-0.5">
                       {formatDate(tx.createdAt)} &middot; {tx.reference}
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0">
                     <p className={`font-extrabold text-sm ${
-                      config.sign === '+' ? 'text-success' : 'text-secondary'
+                      config.sign === '+' ? 'text-success' : 'text-text'
                     }`}>
                       {config.sign}{formatCurrency(tx.amount)}
                     </p>

@@ -52,8 +52,8 @@ export default function StoreDashboardPage() {
         <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
           <Store className="w-10 h-10 text-primary" />
         </div>
-        <h1 className="text-2xl font-extrabold text-secondary">Start your data store</h1>
-        <p className="text-secondary/40 mt-2 mb-8 max-w-sm mx-auto">
+        <h1 className="text-2xl font-extrabold text-white">Start your data store</h1>
+        <p className="text-text-muted mt-2 mb-8 max-w-sm mx-auto">
           Create your own branded data store, set custom prices, and earn profit on every sale.
         </p>
         <Link href="/store/setup">
@@ -69,8 +69,8 @@ export default function StoreDashboardPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-secondary tracking-tight">{store.storeName}</h1>
-          <p className="text-secondary/40 text-sm mt-1">Manage your data store.</p>
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">{store.storeName}</h1>
+          <p className="text-text-muted text-sm mt-1">Manage your data store.</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={handleCopyLink}>
@@ -93,8 +93,8 @@ export default function StoreDashboardPage() {
               <ShoppingBag className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-xl font-extrabold text-secondary">{store.totalSales || 0}</p>
-              <p className="text-xs text-secondary/40">Total Sales</p>
+              <p className="text-xl font-extrabold text-white">{store.totalSales || 0}</p>
+              <p className="text-xs text-text-muted">Total Sales</p>
             </div>
           </div>
         </Card>
@@ -104,8 +104,8 @@ export default function StoreDashboardPage() {
               <TrendingUp className="w-5 h-5 text-success" />
             </div>
             <div>
-              <p className="text-xl font-extrabold text-secondary">{formatCurrency(store.totalEarnings || 0)}</p>
-              <p className="text-xs text-secondary/40">Total Earnings</p>
+              <p className="text-xl font-extrabold text-white">{formatCurrency(store.totalEarnings || 0)}</p>
+              <p className="text-xs text-text-muted">Total Earnings</p>
             </div>
           </div>
         </Card>
@@ -115,8 +115,8 @@ export default function StoreDashboardPage() {
               <Wallet className="w-5 h-5 text-accent" />
             </div>
             <div>
-              <p className="text-xl font-extrabold text-secondary">{formatCurrency(store.pendingBalance || 0)}</p>
-              <p className="text-xs text-secondary/40">Pending Balance</p>
+              <p className="text-xl font-extrabold text-white">{formatCurrency(store.pendingBalance || 0)}</p>
+              <p className="text-xs text-text-muted">Pending Balance</p>
             </div>
           </div>
         </Card>
@@ -126,8 +126,8 @@ export default function StoreDashboardPage() {
               <Store className="w-5 h-5 text-blue-500" />
             </div>
             <div>
-              <p className="text-xl font-extrabold text-secondary">{store.isActive ? 'Active' : 'Inactive'}</p>
-              <p className="text-xs text-secondary/40">Store Status</p>
+              <p className="text-xl font-extrabold text-white">{store.isActive ? 'Active' : 'Inactive'}</p>
+              <p className="text-xs text-text-muted">Store Status</p>
             </div>
           </div>
         </Card>
@@ -139,10 +139,10 @@ export default function StoreDashboardPage() {
           <Card hover>
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-bold text-secondary">Products</p>
-                <p className="text-xs text-secondary/40">Set your prices</p>
+                <p className="font-bold text-white">Products</p>
+                <p className="text-xs text-text-muted">Set your prices</p>
               </div>
-              <ShoppingBag className="w-5 h-5 text-secondary/20" />
+              <ShoppingBag className="w-5 h-5 text-white/20" />
             </div>
           </Card>
         </Link>
@@ -150,10 +150,10 @@ export default function StoreDashboardPage() {
           <Card hover>
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-bold text-secondary">Withdrawals</p>
-                <p className="text-xs text-secondary/40">Cash out earnings</p>
+                <p className="font-bold text-white">Withdrawals</p>
+                <p className="text-xs text-text-muted">Cash out earnings</p>
               </div>
-              <Wallet className="w-5 h-5 text-secondary/20" />
+              <Wallet className="w-5 h-5 text-white/20" />
             </div>
           </Card>
         </Link>
@@ -161,10 +161,10 @@ export default function StoreDashboardPage() {
           <Card hover>
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-bold text-secondary">Settings</p>
-                <p className="text-xs text-secondary/40">Store config</p>
+                <p className="font-bold text-white">Settings</p>
+                <p className="text-xs text-text-muted">Store config</p>
               </div>
-              <Store className="w-5 h-5 text-secondary/20" />
+              <Store className="w-5 h-5 text-white/20" />
             </div>
           </Card>
         </Link>

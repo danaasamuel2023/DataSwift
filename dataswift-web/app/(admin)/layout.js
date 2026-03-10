@@ -46,14 +46,14 @@ export default function AdminLayout({ children }) {
   return (
     <div className="flex h-screen bg-background">
       {/* Sidebar - Desktop */}
-      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-secondary/[0.06] flex-shrink-0">
-        <div className="p-5 border-b border-secondary/[0.06]">
+      <aside className="hidden md:flex flex-col w-64 bg-card border-r border-white/[0.04] flex-shrink-0">
+        <div className="p-5 border-b border-white/[0.04]">
           <Link href="/admin" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-secondary rounded-xl flex items-center justify-center">
+            <div className="w-8 h-8 bg-surface-light rounded-xl flex items-center justify-center">
               <Zap className="w-4.5 h-4.5 text-primary fill-primary" />
             </div>
             <div>
-              <span className="font-extrabold text-sm text-secondary">DataSwift</span>
+              <span className="font-extrabold text-sm text-white">SwiftBundle</span>
               <span className="text-[10px] text-primary font-bold ml-1.5 bg-primary/10 px-1.5 py-0.5 rounded">ADMIN</span>
             </div>
           </Link>
@@ -70,7 +70,7 @@ export default function AdminLayout({ children }) {
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
                   ${active
                     ? 'bg-primary/10 text-primary'
-                    : 'text-secondary/50 hover:text-secondary hover:bg-secondary/[0.03]'
+                    : 'text-text-muted hover:text-white hover:bg-white/5'
                   }`}
               >
                 <Icon className="w-[18px] h-[18px]" />
@@ -81,10 +81,10 @@ export default function AdminLayout({ children }) {
           })}
         </nav>
 
-        <div className="p-3 border-t border-secondary/[0.06]">
+        <div className="p-3 border-t border-white/[0.04]">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-secondary/40 hover:text-error hover:bg-error/5 transition-all"
+            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-text-muted hover:text-error hover:bg-error/5 transition-all"
           >
             <LogOut className="w-[18px] h-[18px]" />
             Log out
@@ -93,11 +93,11 @@ export default function AdminLayout({ children }) {
       </aside>
 
       {/* Mobile header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-white border-b border-secondary/[0.06] z-30 flex items-center justify-between px-4">
+      <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-card border-b border-white/[0.04] z-30 flex items-center justify-between px-4">
         <button onClick={() => setSidebarOpen(true)} className="p-1.5">
-          <Menu className="w-5 h-5 text-secondary" />
+          <Menu className="w-5 h-5 text-white" />
         </button>
-        <span className="font-extrabold text-sm text-secondary">Admin Panel</span>
+        <span className="font-extrabold text-sm text-white">Admin Panel</span>
         <div className="w-8" />
       </div>
 
@@ -105,9 +105,9 @@ export default function AdminLayout({ children }) {
       {sidebarOpen && (
         <>
           <div className="fixed inset-0 bg-black/40 z-40" onClick={() => setSidebarOpen(false)} />
-          <aside className="fixed left-0 top-0 bottom-0 w-72 bg-white z-50 flex flex-col shadow-2xl">
-            <div className="p-4 flex items-center justify-between border-b border-secondary/[0.06]">
-              <span className="font-extrabold text-secondary">Admin Panel</span>
+          <aside className="fixed left-0 top-0 bottom-0 w-72 bg-card z-50 flex flex-col shadow-2xl">
+            <div className="p-4 flex items-center justify-between border-b border-white/[0.04]">
+              <span className="font-extrabold text-white">Admin Panel</span>
               <button onClick={() => setSidebarOpen(false)}><X className="w-5 h-5" /></button>
             </div>
             <nav className="flex-1 px-3 mt-4 space-y-0.5 overflow-y-auto">
@@ -120,14 +120,14 @@ export default function AdminLayout({ children }) {
                     href={item.href}
                     onClick={() => setSidebarOpen(false)}
                     className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all
-                      ${active ? 'bg-primary/10 text-primary' : 'text-secondary/50'}`}
+                      ${active ? 'bg-primary/10 text-primary' : 'text-text-muted'}`}
                   >
                     <Icon className="w-5 h-5" /> {item.label}
                   </Link>
                 );
               })}
             </nav>
-            <div className="p-3 border-t border-secondary/[0.06]">
+            <div className="p-3 border-t border-white/[0.04]">
               <button onClick={handleLogout} className="flex items-center gap-3 w-full px-3 py-3 rounded-xl text-sm text-error/60 hover:text-error">
                 <LogOut className="w-5 h-5" /> Log out
               </button>
