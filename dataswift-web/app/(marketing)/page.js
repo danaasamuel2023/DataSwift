@@ -96,14 +96,13 @@ export default function LandingPage() {
           </div>
           <div className="grid sm:grid-cols-3 gap-5">
             {[
-              { net: 'YELLO', label: 'MTN', color: 'mtn', bundles: [{ gb: '1GB', price: '4.15' }, { gb: '2GB', price: '9.00' }, { gb: '5GB', price: '23.00' }, { gb: '10GB', price: '42.00' }] },
-              { net: 'TELECEL', label: 'Telecel', color: 'telecel', bundles: [{ gb: '10GB', price: '38.50' }, { gb: '15GB', price: '55.00' }, { gb: '25GB', price: '92.00' }, { gb: '50GB', price: '178.00' }] },
-              { net: 'AT_PREMIUM', label: 'AirtelTigo', color: 'at', bundles: [{ gb: '2GB', price: '8.50' }, { gb: '5GB', price: '20.00' }, { gb: '10GB', price: '39.00' }, { gb: '25GB', price: '96.00' }] }
+              { net: 'YELLO', label: 'MTN', bg: '#FFCC00', bundles: [{ gb: '1GB', price: '4.15' }, { gb: '2GB', price: '9.00' }, { gb: '5GB', price: '23.00' }, { gb: '10GB', price: '42.00' }] },
+              { net: 'TELECEL', label: 'Telecel', bg: '#E60000', bundles: [{ gb: '10GB', price: '38.50' }, { gb: '15GB', price: '55.00' }, { gb: '25GB', price: '92.00' }, { gb: '50GB', price: '178.00' }] },
+              { net: 'AT_PREMIUM', label: 'AirtelTigo', bg: '#0066CC', bundles: [{ gb: '2GB', price: '8.50' }, { gb: '5GB', price: '20.00' }, { gb: '10GB', price: '39.00' }, { gb: '25GB', price: '96.00' }] }
             ].map((network) => (
-              <div key={network.net} className="glass-card rounded-2xl overflow-hidden hover:border-primary/20 transition-all duration-300">
-                <div className="px-5 py-4 border-b border-white/[0.04] flex items-center gap-3">
-                  <NetworkIcon network={network.net} size={32} />
-                  <span className="font-bold text-white">{network.label}</span>
+              <div key={network.net} className="glass-card rounded-2xl overflow-hidden hover:border-primary/20 transition-all duration-300 group">
+                <div className="px-5 py-5 flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${network.bg}20, ${network.bg}08)` }}>
+                  <NetworkIcon network={network.net} size={80} />
                 </div>
                 <div className="px-5 py-3">
                   {network.bundles.map((b) => (
