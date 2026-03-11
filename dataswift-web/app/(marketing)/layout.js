@@ -21,7 +21,6 @@ export default function MarketingLayout({ children }) {
             <div className="hidden md:flex items-center gap-8">
               <Link href="/#pricing" className="text-sm text-text-muted hover:text-white transition-colors">Pricing</Link>
               <Link href="/#how-it-works" className="text-sm text-text-muted hover:text-white transition-colors">How it Works</Link>
-              <Link href="/#agents" className="text-sm text-text-muted hover:text-white transition-colors">For Agents</Link>
             </div>
 
             <div className="hidden md:flex items-center gap-3">
@@ -46,7 +45,6 @@ export default function MarketingLayout({ children }) {
           <div className="md:hidden bg-card border-t border-white/[0.06] px-4 py-4 space-y-2">
             <Link href="/#pricing" className="block py-2.5 text-sm text-text-muted" onClick={() => setMobileMenu(false)}>Pricing</Link>
             <Link href="/#how-it-works" className="block py-2.5 text-sm text-text-muted" onClick={() => setMobileMenu(false)}>How it Works</Link>
-            <Link href="/#agents" className="block py-2.5 text-sm text-text-muted" onClick={() => setMobileMenu(false)}>For Agents</Link>
             <div className="pt-3 flex gap-3 border-t border-white/[0.06]">
               <Link href="/sign-in" className="flex-1"><Button variant="outline" fullWidth size="sm">Log in</Button></Link>
               <Link href="/quick-buy" className="flex-1"><Button fullWidth size="sm">Buy Data</Button></Link>
@@ -59,46 +57,14 @@ export default function MarketingLayout({ children }) {
 
       {/* Footer */}
       <footer className="bg-card border-t border-white/[0.06]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="col-span-2 md:col-span-1">
-              <Logo />
-              <p className="text-sm text-text-muted leading-relaxed mt-3">
-                Ghana&apos;s trusted platform for instant data bundles. MTN, Telecel & AirtelTigo.
-              </p>
-              <div className="flex items-center gap-1.5 mt-4 text-xs text-accent">
-                <Shield className="w-3.5 h-3.5" />
-                <span className="font-medium">Secured by Paystack</span>
-              </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <Logo size="sm" />
+            <div className="flex items-center gap-1.5 text-xs text-accent">
+              <Shield className="w-3.5 h-3.5" />
+              <span className="font-medium">Secured by Paystack</span>
             </div>
-            <div>
-              <h4 className="text-white font-semibold text-sm mb-4">Product</h4>
-              <div className="space-y-2.5 text-sm text-text-muted">
-                <Link href="/quick-buy" className="block hover:text-white transition-colors">Buy Data</Link>
-                <Link href="/sign-up" className="block hover:text-white transition-colors">Agent Store</Link>
-                <Link href="/#pricing" className="block hover:text-white transition-colors">Pricing</Link>
-              </div>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold text-sm mb-4">Support</h4>
-              <div className="space-y-2.5 text-sm text-text-muted">
-                <Link href="/#how-it-works" className="block hover:text-white transition-colors">How it Works</Link>
-                <Link href="/#" className="block hover:text-white transition-colors">Contact Us</Link>
-                <Link href="/#" className="block hover:text-white transition-colors">FAQs</Link>
-              </div>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold text-sm mb-4">Legal</h4>
-              <div className="space-y-2.5 text-sm text-text-muted">
-                <Link href="/#" className="block hover:text-white transition-colors">Terms of Service</Link>
-                <Link href="/#" className="block hover:text-white transition-colors">Privacy Policy</Link>
-                <Link href="/#" className="block hover:text-white transition-colors">Refund Policy</Link>
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-white/[0.06] mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-text-muted">
-            <span>&copy; {new Date().getFullYear()} SwiftBundle. All rights reserved.</span>
-            <span>DataSwift &middot; Payments by Paystack</span>
+            <span className="text-xs text-text-muted">&copy; {new Date().getFullYear()} DataSwift. All rights reserved.</span>
           </div>
         </div>
       </footer>
