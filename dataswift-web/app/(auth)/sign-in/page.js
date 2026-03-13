@@ -49,8 +49,8 @@ export default function SignInPage() {
 
   return (
     <div className="glass-card rounded-2xl p-6 sm:p-8">
-      <h1 className="text-2xl font-extrabold text-white tracking-tight">Welcome back</h1>
-      <p className="text-text-muted text-sm mt-1.5 mb-8">Log in to buy data or manage your store.</p>
+      <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">Welcome back</h1>
+      <p className="text-gray-500 dark:text-gray-400 text-sm mt-1.5 mb-8">Log in to buy data or manage your store.</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
@@ -77,7 +77,7 @@ export default function SignInPage() {
         />
 
         <div className="flex justify-end">
-          <Link href="/forgot-password" className="text-xs text-primary font-medium hover:underline">
+          <Link href="/forgot-password" className="text-xs text-amber-600 dark:text-amber-400 font-medium hover:underline">
             Forgot password?
           </Link>
         </div>
@@ -87,9 +87,9 @@ export default function SignInPage() {
         </Button>
       </form>
 
-      <p className="text-center text-sm text-text-muted mt-6">
+      <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
         Don&apos;t have an account?{' '}
-        <Link href="/sign-up" className="text-primary font-semibold hover:underline">Sign up</Link>
+        <Link href="/sign-up" className="text-amber-600 dark:text-amber-400 font-semibold hover:underline">Sign up</Link>
       </p>
     </div>
   );

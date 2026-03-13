@@ -1,8 +1,7 @@
 'use client';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Zap, Shield, Clock, CheckCircle, CreditCard, ChevronDown, Phone, Wifi, Star, Users, TrendingUp, Smartphone } from 'lucide-react';
-import Button from '@/components/ui/Button';
+import { ArrowRight, Zap, Shield, Clock, CheckCircle, CreditCard, Phone, Wifi, Star, Users, TrendingUp, Smartphone } from 'lucide-react';
 import NetworkIcon from '@/components/shared/NetworkIcon';
 
 const networkData = [
@@ -51,20 +50,19 @@ export default function LandingPage() {
 
   return (
     <>
-      {/* Hero Banner — gradient like DataMart */}
+      {/* Hero Banner — warm amber gradient like DataMart */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/10 pointer-events-none" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/[0.08] rounded-full blur-[150px] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-yellow-500/5 pointer-events-none dark:from-amber-500/5 dark:to-yellow-500/3" />
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-20 pb-10 sm:pb-16">
-          {/* Greeting banner */}
-          <div className="bg-gradient-to-r from-primary to-blue-700 rounded-2xl p-5 sm:p-8 mb-8 shadow-xl shadow-primary/20">
+          {/* Greeting banner — amber/yellow gradient */}
+          <div className="bg-gradient-to-br from-yellow-400 to-amber-500 rounded-2xl p-5 sm:p-8 mb-8 shadow-xl shadow-amber-500/20">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
                 <h1 className="text-2xl sm:text-4xl font-extrabold text-white leading-tight">
                   Buy Cheap Data Bundles Instantly
                 </h1>
-                <p className="text-blue-100 mt-2 text-sm sm:text-base">
+                <p className="text-white/90 mt-2 text-sm sm:text-base">
                   MTN, Telecel & AirtelTigo — Best prices in Ghana. No account needed.
                 </p>
                 <p className="text-white font-bold text-xs mt-3 bg-black/20 inline-block px-3 py-1.5 rounded-full border border-white/20">
@@ -73,12 +71,12 @@ export default function LandingPage() {
               </div>
               <div className="flex gap-2 sm:gap-3 flex-wrap">
                 <Link href="/quick-buy">
-                  <button className="px-5 py-2.5 sm:px-6 sm:py-3 bg-white text-primary font-bold text-sm rounded-xl shadow-lg hover:bg-gray-50 transition-all active:scale-[0.98]">
+                  <button className="px-5 py-2.5 sm:px-6 sm:py-3 bg-gray-800 text-yellow-400 font-bold text-sm rounded-xl shadow-lg hover:bg-gray-700 transition-all active:scale-[0.98]">
                     Buy Data Now
                   </button>
                 </Link>
                 <Link href="/sign-up">
-                  <button className="px-5 py-2.5 sm:px-6 sm:py-3 bg-white/10 text-white font-bold text-sm rounded-xl border border-white/20 hover:bg-white/20 transition-all active:scale-[0.98]">
+                  <button className="px-5 py-2.5 sm:px-6 sm:py-3 bg-white/15 text-white font-bold text-sm rounded-xl border border-white/20 hover:bg-white/25 transition-all active:scale-[0.98]">
                     Create Account
                   </button>
                 </Link>
@@ -86,20 +84,20 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* System Status Banner — like DataMart */}
-          <div className="bg-gradient-to-r from-accent to-emerald-600 rounded-2xl p-4 sm:p-5 mb-8 shadow-lg">
+          {/* System Status Banner — dark navy like DataMart */}
+          <div className="bg-gray-800 dark:bg-navy-dark rounded-2xl p-4 sm:p-5 mb-8 shadow-lg">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <div className="w-3 h-3 bg-white rounded-full animate-ping absolute" />
-                  <div className="w-3 h-3 bg-white rounded-full relative" />
+                  <div className="w-3 h-3 bg-emerald-400 rounded-full animate-ping absolute" />
+                  <div className="w-3 h-3 bg-emerald-400 rounded-full relative" />
                 </div>
                 <div className="text-white">
                   <div className="flex items-center gap-2">
                     <span className="text-xs sm:text-sm font-bold uppercase tracking-wide">System Online</span>
-                    <span className="px-2 py-0.5 bg-white/20 rounded-full text-[10px] sm:text-xs font-bold">24/7</span>
+                    <span className="px-2 py-0.5 bg-yellow-400 text-gray-900 rounded-full text-[10px] sm:text-xs font-bold">24/7</span>
                   </div>
-                  <div className="flex items-center gap-1 text-emerald-100 text-xs sm:text-sm">
+                  <div className="flex items-center gap-1 text-gray-400 text-xs sm:text-sm">
                     <Clock className="w-3 h-3" />
                     <span>{currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}</span>
                   </div>
@@ -107,38 +105,46 @@ export default function LandingPage() {
               </div>
 
               <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-                <div className="flex items-center gap-1.5 bg-white/15 backdrop-blur-sm px-2.5 py-1.5 rounded-full whitespace-nowrap">
-                  <Wifi className="w-3 h-3 text-white" />
-                  <span className="text-[10px] sm:text-xs text-white font-medium">Always Open</span>
+                <div className="flex items-center gap-1.5 bg-gray-700/60 backdrop-blur-sm px-2.5 py-1.5 rounded-full whitespace-nowrap">
+                  <Wifi className="w-3 h-3 text-yellow-400" />
+                  <span className="text-[10px] sm:text-xs text-gray-300 font-medium">Always Open</span>
                 </div>
-                <div className="flex items-center gap-1.5 bg-white/15 backdrop-blur-sm px-2.5 py-1.5 rounded-full whitespace-nowrap">
-                  <Zap className="w-3 h-3 text-white" />
-                  <span className="text-[10px] sm:text-xs text-white font-medium">Instant Delivery</span>
+                <div className="flex items-center gap-1.5 bg-gray-700/60 backdrop-blur-sm px-2.5 py-1.5 rounded-full whitespace-nowrap">
+                  <Zap className="w-3 h-3 text-yellow-400" />
+                  <span className="text-[10px] sm:text-xs text-gray-300 font-medium">Instant Delivery</span>
                 </div>
-                <div className="flex items-center gap-1.5 bg-white/15 backdrop-blur-sm px-2.5 py-1.5 rounded-full whitespace-nowrap">
-                  <Shield className="w-3 h-3 text-white" />
-                  <span className="text-[10px] sm:text-xs text-white font-bold">Paystack Secured</span>
+                <div className="flex items-center gap-1.5 bg-gray-700/60 backdrop-blur-sm px-2.5 py-1.5 rounded-full whitespace-nowrap">
+                  <Shield className="w-3 h-3 text-yellow-400" />
+                  <span className="text-[10px] sm:text-xs text-gray-300 font-bold">Paystack Secured</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Quick Network Buttons — like DataMart "Place New Order" */}
-          <div className="bg-card border border-white/[0.06] rounded-2xl overflow-hidden shadow-lg mb-8">
+          {/* Quick Network Buttons */}
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden shadow-lg mb-8">
             <div className="h-1.5 bg-gradient-to-r from-yellow-400 via-red-500 to-blue-600" />
             <div className="p-4 sm:p-6">
-              <h2 className="text-base sm:text-lg font-bold text-white mb-4">Quick Buy — Select Network</h2>
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-4">Quick Buy — Select Network</h2>
               <div className="grid grid-cols-3 gap-3 sm:gap-4">
-                {networkData.map((net) => (
-                  <Link href="/quick-buy" key={net.id}>
-                    <div className="flex flex-col items-center p-3 sm:p-5 rounded-2xl border border-white/[0.06] hover:border-white/20 hover:shadow-lg transition-all duration-200 bg-white/[0.02] hover:bg-white/[0.04] active:scale-[0.97]">
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 mb-2 sm:mb-3">
-                        <NetworkIcon network={net.id} size={64} />
+                {networkData.map((net) => {
+                  const btnColors = net.id === 'YELLO'
+                    ? 'border-yellow-300 dark:border-yellow-600 bg-yellow-50 dark:bg-yellow-500/10 hover:bg-yellow-100 dark:hover:bg-yellow-500/20 hover:border-yellow-400'
+                    : net.id === 'TELECEL'
+                    ? 'border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 hover:border-red-400'
+                    : 'border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-100 dark:hover:bg-blue-500/20 hover:border-blue-400';
+                  return (
+                    <Link href="/quick-buy" key={net.id}>
+                      <div className={`flex flex-col items-center p-3 sm:p-4 rounded-2xl border-2 ${btnColors} hover:shadow-lg transition-all duration-200 active:scale-[0.97]`}>
+                        <div className="mb-1.5 sm:mb-2">
+                          <NetworkIcon network={net.id} size={40} />
+                        </div>
+                        <span className="font-bold text-gray-900 dark:text-white text-xs sm:text-sm">{net.label}</span>
+                        <span className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-0.5">Buy Now →</span>
                       </div>
-                      <span className="font-bold text-white text-xs sm:text-sm">{net.label}</span>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -146,15 +152,15 @@ export default function LandingPage() {
           {/* Stats Row */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8">
             {[
-              { icon: Users, value: '10,000+', label: 'Happy Customers', color: 'text-primary' },
-              { icon: Zap, value: '< 30s', label: 'Delivery Time', color: 'text-accent' },
-              { icon: Shield, value: '100%', label: 'Secure Payments', color: 'text-primary' },
-              { icon: Clock, value: '24/7', label: 'Always Available', color: 'text-accent' },
+              { icon: Users, value: '10,000+', label: 'Happy Customers', color: 'text-amber-500' },
+              { icon: Zap, value: '< 30s', label: 'Delivery Time', color: 'text-emerald-500' },
+              { icon: Shield, value: '100%', label: 'Secure Payments', color: 'text-amber-500' },
+              { icon: Clock, value: '24/7', label: 'Always Available', color: 'text-emerald-500' },
             ].map((stat) => (
-              <div key={stat.label} className="bg-card border border-white/[0.06] rounded-2xl p-4 sm:p-5 text-center hover:border-white/10 transition-all">
+              <div key={stat.label} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-4 sm:p-5 text-center hover:border-amber-300 dark:hover:border-amber-500/30 transition-all">
                 <stat.icon className={`w-6 h-6 ${stat.color} mx-auto mb-2`} />
-                <p className="text-xl sm:text-2xl font-extrabold text-white">{stat.value}</p>
-                <p className="text-xs text-text-muted mt-1">{stat.label}</p>
+                <p className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white">{stat.value}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -162,18 +168,18 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing / Packages */}
-      <section id="pricing" className="border-t border-white/[0.06]">
+      <section id="pricing" className="border-t border-gray-200 dark:border-gray-800">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
-          <div className="bg-card border border-white/[0.06] rounded-2xl overflow-hidden shadow-lg">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden shadow-lg">
             <div className="h-1.5 bg-gradient-to-r from-yellow-400 via-red-500 to-blue-600" />
             <div className="p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-                <h2 className="text-lg sm:text-xl font-bold text-white">Our Data Packages</h2>
-                <p className="text-text-muted text-xs sm:text-sm">No hidden fees. What you see is what you pay.</p>
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Our Data Packages</h2>
+                <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">No hidden fees. What you see is what you pay.</p>
               </div>
 
               {/* Network Tabs */}
-              <div className="flex items-center gap-1 mb-6 bg-background/50 border border-white/[0.06] rounded-xl p-1.5">
+              <div className="flex items-center gap-1 mb-6 bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl p-1.5">
                 {networkData.map((network) => (
                   <button
                     key={network.id}
@@ -181,7 +187,7 @@ export default function LandingPage() {
                     className={`flex items-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 flex-1 justify-center ${
                       activeNetwork === network.id
                         ? `bg-gradient-to-r ${network.bgClass} text-white shadow-lg`
-                        : 'text-text-muted hover:text-white hover:bg-white/[0.04]'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-white dark:hover:bg-gray-800'
                     }`}
                   >
                     <NetworkIcon network={network.id} size={20} />
@@ -190,71 +196,85 @@ export default function LandingPage() {
                 ))}
               </div>
 
-              {/* Bundle Cards Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-                {currentNetwork.bundles.map((b) => {
-                  const cardKey = `${activeNetwork}-${b.gb}`;
-                  const isExpanded = expandedCard === cardKey;
+              {/* Bundle Cards Grid — DataMart style colored cards */}
+              {(() => {
+                const cardStyles = {
+                  YELLO: { bg: 'bg-yellow-400', text: 'text-black', textMuted: 'text-black/60', border: 'border-black/10', ringSelected: 'ring-black/30', expandBorder: 'border-yellow-300 dark:border-yellow-700', priceColor: 'text-yellow-600 dark:text-yellow-400', buyBtn: 'bg-yellow-400 hover:bg-yellow-500 text-black' },
+                  AT_PREMIUM: { bg: 'bg-purple-600', text: 'text-white', textMuted: 'text-white/60', border: 'border-white/20', ringSelected: 'ring-white/30', expandBorder: 'border-purple-300 dark:border-purple-700', priceColor: 'text-purple-600 dark:text-purple-400', buyBtn: 'bg-purple-600 hover:bg-purple-700 text-white' },
+                  TELECEL: { bg: 'bg-red-600', text: 'text-white', textMuted: 'text-white/60', border: 'border-white/20', ringSelected: 'ring-white/30', expandBorder: 'border-red-300 dark:border-red-700', priceColor: 'text-red-600 dark:text-red-400', buyBtn: 'bg-red-600 hover:bg-red-700 text-white' },
+                };
+                const s = cardStyles[activeNetwork];
 
-                  return (
-                    <div key={cardKey} className="flex flex-col">
-                      <button
-                        onClick={() => setExpandedCard(isExpanded ? null : cardKey)}
-                        className={`bg-background/50 border rounded-2xl p-4 sm:p-5 text-left transition-all duration-200 hover:shadow-md ${
-                          isExpanded ? 'border-primary/40 ring-1 ring-primary/20' : 'border-white/[0.06] hover:border-white/15'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="flex items-baseline gap-1">
-                            <span className="text-3xl sm:text-4xl font-extrabold text-white">{b.gb}</span>
-                            <span className="text-sm font-bold text-text-muted">GB</span>
-                          </div>
-                          <NetworkIcon network={activeNetwork} size={36} />
-                        </div>
+                return (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                    {currentNetwork.bundles.map((b) => {
+                      const cardKey = `${activeNetwork}-${b.gb}`;
+                      const isExpanded = expandedCard === cardKey;
 
-                        <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/[0.06]">
-                          <div className="text-center">
-                            <p className="text-[10px] sm:text-xs text-text-muted mb-1">Price</p>
-                            <p className="text-xs sm:text-sm font-bold text-white">GH₵{b.price}</p>
-                          </div>
-                          <div className="text-center border-x border-white/[0.06]">
-                            <p className="text-[10px] sm:text-xs text-text-muted mb-1">Rollover</p>
-                            <p className={`text-xs sm:text-sm font-bold ${b.rollover === 'Yes' ? 'text-accent' : 'text-text-muted'}`}>{b.rollover}</p>
-                          </div>
-                          <div className="text-center">
-                            <p className="text-[10px] sm:text-xs text-text-muted mb-1">Duration</p>
-                            <p className="text-xs sm:text-sm font-bold text-accent">{b.duration}</p>
-                          </div>
-                        </div>
+                      return (
+                        <React.Fragment key={cardKey}>
+                          {/* Bundle Card */}
+                          <div
+                            onClick={() => setExpandedCard(isExpanded ? null : cardKey)}
+                            className={`${s.bg} ${s.text} overflow-hidden cursor-pointer transition-all hover:shadow-lg rounded-2xl hover:-translate-y-1 ${
+                              isExpanded ? `ring-2 ${s.ringSelected} shadow-xl -translate-y-1` : ''
+                            }`}
+                          >
+                            {/* Top: Capacity + Logo */}
+                            <div className="p-4 flex items-center justify-between">
+                              <h3 className="text-2xl sm:text-3xl font-bold">{b.gb} GB</h3>
+                              <NetworkIcon network={activeNetwork} size={36} />
+                            </div>
 
-                        <div className={`flex items-center justify-center mt-3 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}>
-                          <ChevronDown className="w-4 h-4 text-text-muted" />
-                        </div>
-                      </button>
-
-                      {isExpanded && (
-                        <div className="bg-card border border-t-0 border-primary/20 rounded-b-2xl -mt-2 pt-4 pb-4 px-4 sm:px-5">
-                          <div className="relative">
-                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                            <input
-                              type="tel"
-                              placeholder="Enter phone number"
-                              value={phoneNumber}
-                              onChange={(e) => setPhoneNumber(e.target.value)}
-                              className="w-full bg-background border border-white/[0.08] rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-text-muted focus:outline-none focus:border-primary/40 transition-colors"
-                            />
+                            {/* Bottom Stats Bar */}
+                            <div className={`grid grid-cols-3 border-t ${s.border}`}>
+                              <div className="p-2 text-center">
+                                <div className="text-sm font-bold">₵{b.price}</div>
+                                <div className={`text-[10px] ${s.textMuted} uppercase`}>Price</div>
+                              </div>
+                              <div className={`p-2 text-center border-x ${s.border}`}>
+                                <div className="text-sm font-bold">{b.rollover === 'Yes' ? 'Yes' : 'N/A'}</div>
+                                <div className={`text-[10px] ${s.textMuted} uppercase`}>Rollover</div>
+                              </div>
+                              <div className="p-2 text-center">
+                                <div className="text-sm font-bold">{b.duration}</div>
+                                <div className={`text-[10px] ${s.textMuted} uppercase`}>Duration</div>
+                              </div>
+                            </div>
                           </div>
-                          <Link href={`/quick-buy?network=${activeNetwork}&gb=${b.gb}&phone=${phoneNumber}`} className="block mt-3">
-                            <button className="w-full bg-primary hover:bg-primary/90 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors active:scale-[0.98]">
-                              Buy Now — GH₵{b.price}
-                            </button>
-                          </Link>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+
+                          {/* Expansion Panel */}
+                          {isExpanded && (
+                            <div className={`col-span-2 sm:col-span-3 lg:col-span-4 bg-white dark:bg-gray-800 rounded-2xl p-3 sm:p-4 shadow-md border ${s.expandBorder}`}>
+                              <div className="flex items-center justify-center gap-2 mb-3">
+                                <NetworkIcon network={activeNetwork} size={28} />
+                                <span className="font-bold text-gray-900 dark:text-white text-base">{b.gb}GB</span>
+                                <span className="text-gray-400 dark:text-gray-500 text-sm">&mdash;</span>
+                                <span className={`font-bold ${s.priceColor} text-base`}>GH₵ {b.price}</span>
+                              </div>
+
+                              <div className="flex gap-2 max-w-md mx-auto">
+                                <input
+                                  type="tel"
+                                  value={phoneNumber}
+                                  onChange={(e) => setPhoneNumber(e.target.value)}
+                                  placeholder="0XXXXXXXXX"
+                                  className="flex-1 px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border border-gray-200 dark:border-gray-600 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 focus:outline-none text-center font-medium text-sm"
+                                />
+                                <Link href={`/quick-buy?network=${activeNetwork}&gb=${b.gb}&phone=${phoneNumber}`}>
+                                  <button className={`px-5 py-2.5 ${s.buyBtn} font-bold rounded-xl whitespace-nowrap text-sm transition-colors`}>
+                                    Buy ₵{b.price}
+                                  </button>
+                                </Link>
+                              </div>
+                            </div>
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>
@@ -263,24 +283,24 @@ export default function LandingPage() {
       {/* How it works */}
       <section id="how-it-works">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-10 sm:pb-16">
-          <div className="bg-card border border-white/[0.06] rounded-2xl overflow-hidden shadow-lg">
-            <div className="h-1.5 bg-gradient-to-r from-primary to-accent" />
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden shadow-lg">
+            <div className="h-1.5 bg-gradient-to-r from-yellow-400 to-amber-500" />
             <div className="p-4 sm:p-6">
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-6">How It Works</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-6">How It Works</h2>
               <div className="grid sm:grid-cols-3 gap-4 sm:gap-6">
                 {[
                   { num: '1', icon: Smartphone, title: 'Select bundle', desc: 'Choose your network and data package.' },
                   { num: '2', icon: CreditCard, title: 'Pay with MoMo', desc: 'Secure payment via Mobile Money or Paystack.' },
                   { num: '3', icon: Zap, title: 'Receive instantly', desc: 'Data delivered to the phone within seconds.' },
                 ].map((step) => (
-                  <div key={step.num} className="flex items-start gap-3 p-3 sm:p-4 rounded-xl bg-background/50 border border-white/[0.06]">
-                    <div className="w-10 h-10 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <step.icon className="w-5 h-5 text-primary" />
+                  <div key={step.num} className="flex items-start gap-3 p-3 sm:p-4 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700">
+                    <div className="w-10 h-10 bg-amber-100 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <step.icon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                     </div>
                     <div>
-                      <div className="text-[10px] font-bold text-primary mb-1">STEP {step.num}</div>
-                      <h3 className="font-bold text-white text-sm mb-1">{step.title}</h3>
-                      <p className="text-text-muted text-xs leading-relaxed">{step.desc}</p>
+                      <div className="text-[10px] font-bold text-amber-600 dark:text-amber-400 mb-1">STEP {step.num}</div>
+                      <h3 className="font-bold text-gray-900 dark:text-white text-sm mb-1">{step.title}</h3>
+                      <p className="text-gray-500 dark:text-gray-400 text-xs leading-relaxed">{step.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -293,26 +313,26 @@ export default function LandingPage() {
       {/* Testimonials */}
       <section>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-10 sm:pb-16">
-          <div className="bg-card border border-white/[0.06] rounded-2xl overflow-hidden shadow-lg">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden shadow-lg">
             <div className="h-1.5 bg-gradient-to-r from-amber-400 to-yellow-500" />
             <div className="p-4 sm:p-6">
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-4">What Our Customers Say</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4">What Our Customers Say</h2>
               <div className="grid sm:grid-cols-3 gap-4">
                 {[
                   { name: 'Kwame A.', location: 'Accra', text: 'Been using SwiftBundle for months now. The data comes through instantly and the prices are the best I\'ve found.', rating: 5 },
                   { name: 'Abena M.', location: 'Kumasi', text: 'Very reliable service. My customers are happy with the fast delivery and I make good profit as an agent.', rating: 5 },
                   { name: 'Yaw K.', location: 'Tamale', text: 'I buy data for my family every week. The MoMo payment is so convenient. No wahala at all.', rating: 5 },
                 ].map((review) => (
-                  <div key={review.name} className="p-4 rounded-xl bg-background/50 border border-white/[0.06]">
+                  <div key={review.name} className="p-4 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700">
                     <div className="flex gap-0.5 mb-3">
                       {[...Array(review.rating)].map((_, i) => (
                         <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                       ))}
                     </div>
-                    <p className="text-xs sm:text-sm text-text-muted leading-relaxed mb-3">&ldquo;{review.text}&rdquo;</p>
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-3">&ldquo;{review.text}&rdquo;</p>
                     <div>
-                      <p className="text-sm font-semibold text-white">{review.name}</p>
-                      <p className="text-xs text-text-muted">{review.location}</p>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">{review.name}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{review.location}</p>
                     </div>
                   </div>
                 ))}
@@ -325,19 +345,19 @@ export default function LandingPage() {
       {/* Final CTA */}
       <section>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-10 sm:pb-16">
-          <div className="bg-gradient-to-r from-primary to-blue-700 rounded-2xl p-6 sm:p-10 text-center shadow-xl shadow-primary/20">
+          <div className="bg-gradient-to-br from-yellow-400 to-amber-500 rounded-2xl p-6 sm:p-10 text-center shadow-xl shadow-amber-500/20">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white">Ready to get started?</h2>
-            <p className="text-blue-100 mt-2 max-w-md mx-auto text-sm">
+            <p className="text-white/90 mt-2 max-w-md mx-auto text-sm">
               Join thousands of Ghanaians who trust SwiftBundle for affordable, instant data bundles.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
               <Link href="/quick-buy">
-                <button className="px-6 py-3 bg-white text-primary font-bold text-sm rounded-xl shadow-lg hover:bg-gray-50 transition-all active:scale-[0.98]">
+                <button className="px-6 py-3 bg-gray-800 text-yellow-400 font-bold text-sm rounded-xl shadow-lg hover:bg-gray-700 transition-all active:scale-[0.98]">
                   Buy Data Now <ArrowRight className="w-4 h-4 inline ml-1" />
                 </button>
               </Link>
               <Link href="/sign-up">
-                <button className="px-6 py-3 bg-white/10 text-white font-bold text-sm rounded-xl border border-white/20 hover:bg-white/20 transition-all active:scale-[0.98]">
+                <button className="px-6 py-3 bg-white/15 text-white font-bold text-sm rounded-xl border border-white/20 hover:bg-white/25 transition-all active:scale-[0.98]">
                   Create Account
                 </button>
               </Link>

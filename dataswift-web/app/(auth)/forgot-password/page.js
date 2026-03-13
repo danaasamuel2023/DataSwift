@@ -54,8 +54,8 @@ export default function ForgotPasswordPage() {
         <div className="w-16 h-16 bg-success/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <KeyRound className="w-7 h-7 text-success" />
         </div>
-        <h1 className="text-2xl font-extrabold text-white">Password reset!</h1>
-        <p className="text-text-muted text-sm mt-2 mb-6">You can now log in with your new password.</p>
+        <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">Password reset!</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 mb-6">You can now log in with your new password.</p>
         <Link href="/sign-in">
           <Button fullWidth size="lg">Go to login</Button>
         </Link>
@@ -65,12 +65,12 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="glass-card rounded-2xl p-6 sm:p-8">
-      <Link href="/sign-in" className="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-primary mb-6 transition-colors">
+      <Link href="/sign-in" className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-amber-500 mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4" /> Back to login
       </Link>
 
-      <h1 className="text-2xl font-extrabold text-white tracking-tight">Reset password</h1>
-      <p className="text-text-muted text-sm mt-1.5 mb-8">
+      <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">Reset password</h1>
+      <p className="text-gray-500 dark:text-gray-400 text-sm mt-1.5 mb-8">
         {step === 'email' ? "Enter your email and we'll send a reset code." : 'Enter the code and your new password.'}
       </p>
 

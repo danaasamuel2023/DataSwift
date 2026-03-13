@@ -28,7 +28,7 @@ export default function Input({
             text-text text-sm
             placeholder:text-text-muted/40
             transition-all duration-200
-            hover:border-white/10
+            hover:border-gray-300 dark:hover:border-gray-600
             focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10
             disabled:bg-surface disabled:opacity-50 disabled:cursor-not-allowed
             ${error ? 'border-error focus:border-error focus:ring-error/10' : ''}

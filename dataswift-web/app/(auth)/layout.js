@@ -20,7 +20,7 @@ export default function AuthLayout({ children }) {
       </div>
 
       {/* Subtle decoration */}
-      <div className="fixed top-0 right-0 w-[500px] h-[500px] bg-primary/[0.04] rounded-full blur-[150px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+      <div className="fixed top-0 right-0 w-[500px] h-[500px] bg-amber-500/[0.04] rounded-full blur-[150px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
     </div>
   );
 }

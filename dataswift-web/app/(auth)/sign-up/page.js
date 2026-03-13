@@ -75,8 +75,8 @@ function SignUpForm() {
 
   return (
     <div className="glass-card rounded-2xl p-6 sm:p-8">
-      <h1 className="text-2xl font-extrabold text-white tracking-tight">Create your account</h1>
-      <p className="text-text-muted text-sm mt-1.5 mb-8">Start buying data in under a minute.</p>
+      <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">Create your account</h1>
+      <p className="text-gray-500 dark:text-gray-400 text-sm mt-1.5 mb-8">Start buying data in under a minute.</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
@@ -133,9 +133,9 @@ function SignUpForm() {
         </Button>
       </form>
 
-      <p className="text-center text-sm text-text-muted mt-6">
+      <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
         Already have an account?{' '}
-        <Link href="/sign-in" className="text-primary font-semibold hover:underline">Log in</Link>
+        <Link href="/sign-in" className="text-amber-600 dark:text-amber-400 font-semibold hover:underline">Log in</Link>
       </p>
     </div>
   );
@@ -145,7 +145,7 @@ export default function SignUpPage() {
   return (
     <Suspense fallback={
       <div className="flex items-center justify-center py-12">
-        <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
       </div>
     }>
       <SignUpForm />

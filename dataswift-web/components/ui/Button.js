@@ -2,12 +2,12 @@
 import { Loader2 } from 'lucide-react';
 
 const variants = {
-  primary: 'bg-primary hover:bg-primary-dark text-white shadow-lg shadow-primary/25 hover:shadow-primary/40',
-  secondary: 'bg-surface-light hover:bg-surface text-text border border-card-border',
-  outline: 'border border-card-border hover:border-primary/50 text-text hover:text-primary bg-transparent',
-  ghost: 'text-text-muted hover:text-text hover:bg-white/5 bg-transparent',
+  primary: 'bg-amber-400 hover:bg-amber-500 text-black font-bold shadow-lg shadow-amber-400/25 hover:shadow-amber-500/40',
+  secondary: 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-white border border-gray-200 dark:border-gray-700',
+  outline: 'border border-gray-200 dark:border-gray-700 hover:border-amber-400 text-gray-800 dark:text-white hover:text-amber-600 bg-transparent',
+  ghost: 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 bg-transparent',
   danger: 'bg-error hover:bg-red-600 text-white',
-  accent: 'bg-accent hover:bg-accent-light text-black font-bold'
+  accent: 'bg-navy hover:bg-navy-dark text-white font-bold'
 };
 
 const sizes = {
