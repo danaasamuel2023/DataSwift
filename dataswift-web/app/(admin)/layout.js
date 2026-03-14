@@ -24,6 +24,11 @@ export default function AdminLayout({ children }) {
   const { user, loading, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Force dark mode for admin panel
+  useEffect(() => {
+    document.documentElement.classList.add('dark');
+  }, []);
+
   useEffect(() => {
     if (!loading && (!user || user.role !== 'admin')) {
       router.push('/sign-in');
