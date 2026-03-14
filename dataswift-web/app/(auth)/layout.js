@@ -4,7 +4,7 @@ import Logo from '@/components/shared/Logo';
 
 export default function AuthLayout({ children }) {
   return (
-    <div className="dark min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Minimal header */}
       <div className="p-4 sm:p-6">
         <Link href="/">

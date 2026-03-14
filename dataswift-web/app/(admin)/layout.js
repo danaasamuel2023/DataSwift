@@ -49,7 +49,7 @@ export default function AdminLayout({ children }) {
   };
 
   return (
-    <div className="dark flex h-screen bg-background">
+    <div className="flex h-screen bg-background">
       {/* Sidebar - Desktop */}
       <aside className="hidden md:flex flex-col w-64 bg-card border-r border-white/[0.04] flex-shrink-0">
         <div className="p-5 border-b border-white/[0.04]">
