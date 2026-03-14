@@ -1,8 +1,10 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ArrowRight, Zap, Shield, Clock, CheckCircle, CreditCard, Phone, Wifi, Star, Users, TrendingUp, Smartphone } from 'lucide-react';
 import NetworkIcon from '@/components/shared/NetworkIcon';
+import { useAuth } from '@/context/AuthContext';
 
 const networkData = [
   { id: 'YELLO', label: 'MTN', color: '#FFCC00', bgClass: 'from-yellow-500 to-amber-500', bundles: [
@@ -36,10 +38,18 @@ const networkData = [
 ];
 
 export default function LandingPage() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
   const [activeNetwork, setActiveNetwork] = useState('YELLO');
   const [expandedCard, setExpandedCard] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace('/dashboard');
+    }
+  }, [user, loading, router]);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
