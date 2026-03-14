@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   Home, Users, Clock, Wallet, Settings, BarChart3,
-  Menu, X, ChevronRight, LogOut, Zap, Gift, DollarSign
+  Menu, X, ChevronRight, LogOut, Zap, Gift, DollarSign, ExternalLink
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
@@ -86,7 +86,14 @@ export default function AdminLayout({ children }) {
           })}
         </nav>
 
-        <div className="p-3 border-t border-white/[0.04]">
+        <div className="p-3 border-t border-white/[0.04] space-y-0.5">
+          <Link
+            href="/"
+            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-text-muted hover:text-primary hover:bg-primary/5 transition-all"
+          >
+            <ExternalLink className="w-[18px] h-[18px]" />
+            View Site
+          </Link>
           <button
             onClick={handleLogout}
             className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-text-muted hover:text-error hover:bg-error/5 transition-all"
@@ -132,7 +139,10 @@ export default function AdminLayout({ children }) {
                 );
               })}
             </nav>
-            <div className="p-3 border-t border-white/[0.04]">
+            <div className="p-3 border-t border-white/[0.04] space-y-0.5">
+              <Link href="/" onClick={() => setSidebarOpen(false)} className="flex items-center gap-3 w-full px-3 py-3 rounded-xl text-sm text-text-muted hover:text-primary">
+                <ExternalLink className="w-5 h-5" /> View Site
+              </Link>
               <button onClick={handleLogout} className="flex items-center gap-3 w-full px-3 py-3 rounded-xl text-sm text-error/60 hover:text-error">
                 <LogOut className="w-5 h-5" /> Log out
               </button>

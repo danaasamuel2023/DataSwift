@@ -1,13 +1,15 @@
 'use client';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { Menu, X, Phone, Mail, MapPin, Clock, ChevronRight } from 'lucide-react';
+import { Menu, X, Phone, Mail, MapPin, Clock, ChevronRight, Shield } from 'lucide-react';
 import Logo from '@/components/shared/Logo';
 import Button from '@/components/ui/Button';
+import { useAuth } from '@/context/AuthContext';
 
 export default function MarketingLayout({ children }) {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
@@ -43,12 +45,30 @@ export default function MarketingLayout({ children }) {
             </div>
 
             <div className="hidden md:flex items-center gap-3">
-              <Link href="/sign-in">
-                <Button variant="ghost" size="sm">Log in</Button>
-              </Link>
-              <Link href="/quick-buy">
-                <Button size="sm">Buy Data</Button>
-              </Link>
+              {user ? (
+                <>
+                  {user.role === 'admin' && (
+                    <Link href="/admin">
+                      <Button variant="ghost" size="sm"><Shield className="w-3.5 h-3.5 mr-1.5" />Admin Panel</Button>
+                    </Link>
+                  )}
+                  <Link href="/dashboard">
+                    <Button variant="ghost" size="sm">Dashboard</Button>
+                  </Link>
+                  <Link href="/quick-buy">
+                    <Button size="sm">Buy Data</Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/sign-in">
+                    <Button variant="ghost" size="sm">Log in</Button>
+                  </Link>
+                  <Link href="/quick-buy">
+                    <Button size="sm">Buy Data</Button>
+                  </Link>
+                </>
+              )}
             </div>
 
             <button
@@ -64,9 +84,21 @@ export default function MarketingLayout({ children }) {
           <div className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 px-4 py-4 space-y-2">
             <Link href="/#pricing" className="block py-2.5 text-sm text-gray-600 dark:text-gray-400" onClick={() => setMobileMenu(false)}>Pricing</Link>
             <Link href="/#how-it-works" className="block py-2.5 text-sm text-gray-600 dark:text-gray-400" onClick={() => setMobileMenu(false)}>How it Works</Link>
+            {user && user.role === 'admin' && (
+              <Link href="/admin" className="block py-2.5 text-sm text-amber-600 dark:text-amber-400 font-semibold" onClick={() => setMobileMenu(false)}>Admin Panel</Link>
+            )}
+            {user && (
+              <Link href="/dashboard" className="block py-2.5 text-sm text-gray-600 dark:text-gray-400" onClick={() => setMobileMenu(false)}>Dashboard</Link>
+            )}
             <div className="pt-3 flex gap-3 border-t border-gray-200 dark:border-gray-800">
-              <Link href="/sign-in" className="flex-1"><Button variant="outline" fullWidth size="sm">Log in</Button></Link>
-              <Link href="/quick-buy" className="flex-1"><Button fullWidth size="sm">Buy Data</Button></Link>
+              {user ? (
+                <Link href="/quick-buy" className="flex-1"><Button fullWidth size="sm">Buy Data</Button></Link>
+              ) : (
+                <>
+                  <Link href="/sign-in" className="flex-1"><Button variant="outline" fullWidth size="sm">Log in</Button></Link>
+                  <Link href="/quick-buy" className="flex-1"><Button fullWidth size="sm">Buy Data</Button></Link>
+                </>
+              )}
             </div>
           </div>
         )}
