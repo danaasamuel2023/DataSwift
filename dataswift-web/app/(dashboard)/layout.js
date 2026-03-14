@@ -61,7 +61,7 @@ export default function DashboardLayout({ children }) {
   const bottomNavItems = navItems.slice(0, 5);
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="dark flex h-screen bg-background">
       {/* Sidebar - Desktop */}
       <aside className="hidden md:flex flex-col w-64 bg-surface border-r border-white/[0.04] flex-shrink-0">
         {/* Logo */}

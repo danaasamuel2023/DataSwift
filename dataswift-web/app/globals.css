@@ -41,8 +41,10 @@
   --font-body: 'Inter', system-ui, sans-serif;
 }
 
-/* Dark mode overrides */
-.dark {
+/* Dark mode overrides — apply when .dark is on html OR any wrapper div */
+.dark,
+:where(.dark) {
+  --color-background: #0a0a0a;
   --color-surface: #111827;
   --color-surface-light: #1F2937;
   --color-card: #111827;
