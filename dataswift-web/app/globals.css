@@ -5,11 +5,23 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --surface: #f9fafb;
+  --surface-light: #f3f4f6;
+  --card: #ffffff;
+  --card-border: rgba(0, 0, 0, 0.08);
+  --text-color: #1f2937;
+  --text-muted: #6b7280;
 }
 
 .dark {
   --background: #0a0a0a;
   --foreground: #ededed;
+  --surface: #111827;
+  --surface-light: #1F2937;
+  --card: #111827;
+  --card-border: rgba(255, 255, 255, 0.06);
+  --text-color: #e2e8f0;
+  --text-muted: #64748b;
 }
 
 @theme inline {
@@ -24,32 +36,21 @@
   --color-accent-light: #34D399;
   --color-navy: #1a3a5c;
   --color-navy-dark: #0f2a45;
-  --color-surface: #f9fafb;
-  --color-surface-light: #f3f4f6;
-  --color-card: #ffffff;
-  --color-card-border: rgba(0, 0, 0, 0.08);
+  --color-surface: var(--surface);
+  --color-surface-light: var(--surface-light);
+  --color-card: var(--card);
+  --color-card-border: var(--card-border);
   --color-mtn: #FFCC00;
   --color-telecel: #E60000;
   --color-at: #0066CC;
   --color-success: #10B981;
   --color-error: #EF4444;
   --color-warning: #F59E0B;
-  --color-text: #1f2937;
-  --color-text-muted: #6b7280;
+  --color-text: var(--text-color);
+  --color-text-muted: var(--text-muted);
 
   --font-heading: 'Inter', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
-}
-
-/* Dark mode overrides */
-.dark {
-  --color-background: #0a0a0a;
-  --color-surface: #111827;
-  --color-surface-light: #1F2937;
-  --color-card: #111827;
-  --color-card-border: rgba(255, 255, 255, 0.06);
-  --color-text: #e2e8f0;
-  --color-text-muted: #64748b;
 }
 
 /* Base */
